@@ -1394,3 +1394,7 @@ siteLevelSet_fnmiLevel,siteLevelSet,mmaSets,fnmiLevel,First Nation Territory/Mé
 geneticUnitSet_cpWell,geneticUnitSet,unitSets,cpWell,Gene copies per well,30,active,3.0.0,3.0.0,,
 geneticUnitSet_gcRx,geneticUnitSet,unitSets,gcRx,Gene copies per Reaction,31,active,3.0.0,3.0.0,,
 geneticUnitSet_percRec,geneticUnitSet,unitSets,percRec,Percent recovery,32,active,3.0.0,3.0.0,,
+polyRelSet_child,polyRelSet,mmaSets,child,Child relationship,1,active,3.0.0,3.0.0,,
+polyRelSet_colocated,polyRelSet,mmaSets,colocated,Co-located relationship,2,active,3.0.0,3.0.0,,
+polyRelSet_overlap,polyRelSet,mmaSets,overlap,Overlapping relationship,3,active,3.0.0,3.0.0,,
+polyRelSet_neighbour,polyRelSet,mmaSets,neighbour,Neighbouring relationship,4,active,3.0.0,3.0.0,,
