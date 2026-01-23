@@ -1,4 +1,4 @@
-﻿Version,2.2.3,
+Version,3.0.0,
 isoCode,isoZone,zoneName
 AD,AD-02,Canillo
 AD,AD-03,Encamp
@@ -5067,3 +5067,14 @@ ZW,ZW-MN,Matabeleland North
 ZW,ZW-MS,Matabeleland South
 ZW,ZW-MV,Masvingo
 ZW,ZW-MW,Mashonaland West
+AU,AU-AC,Ashmore and Cartier Islands
+FR,FR-BI,Bassas da India
+AU,AU-CS,Coral Sea Islands
+FR,FR-EU,Europa Island
+FR,FR-GL,Glorioso Islands
+FR,FR-JN,Juan de Nova Island
+FR,FR-KA,Kerguelen Archipelago
+CN,CN-PA,Paracel Islands
+AQ,AQ-RS,Ross Sea
+FR,FR-TR,Tromelin Island
+PS,PS-WE,West Bank

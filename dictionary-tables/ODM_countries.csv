@@ -1,4 +1,4 @@
-﻿Version,2.2.3,,,,,,,,,,,,,
+Version,3.0.0,,,,,,,,,,,,,
 isoCode,isoCodeX,numCode,tld,nameEngl,nameOfficial,sovereignty,countryExonym,capitalExonym,countryEndonym,capitalEndonym,langScript,phone,utc,utcDST
 AF,AFG,4,.af,Afghanistan,The Islamic Republic of Afghanistan,UN member state,Afghanistan,Kabul,"Afġānistān, افغانستان","Kabul, كابل","Pashto/Dari, (Arabic script)",93,+04:30,
 AX,ALA,248,.ax,Åland Islands,Åland,Finland,Åland,Mariehamn,"Åland, Ahvenanmaa","Mariehamn, Maarianhamina","Swedish, Finnish",+358 (18),+02:00,+03:00
@@ -109,7 +109,7 @@ IR,IRN,364,.ir,Iran,The Islamic Republic of Iran,UN member state,Iran,Tehran,"Ī
 IQ,IRQ,368,.iq,Iraq,The Republic of Iraq,UN member state,Iraq,Baghdad,"Al-'Iraq, العراق, Êraq, عێراق","Baghdad, بغداد, Bexda, بەغدا","Arabic, Kurdish, (Arabic script)",964,+03:00,
 IE,IRL,372,.ie,Ireland,Ireland,UN member state,Ireland,Dublin,"Éire, Ireland","Baile Átha Cliath, Dublin","Irish, English",353,+00:00,+01:00
 IM,IMN,833,.im,Isle of Man,The Isle of Man,British Crown,Isle of Man,Douglas,"Isle of Man, Ellan Vannin","Douglas, Doolish","English, Manx","+44 (1624, 7524, 7624, 7924)",+00:00,+01:00
-IL,ISR,376,.il,Israel,The State of Israel,UN member state,Israel,Jerusalem (declared),"Yisra'el, ישראל, Israʼiyl, إسرائيل","Yerushalayim, ירושלים, Al-Quds, القُدس","Hebrew, Arabic, (Hebrew script), (Arabic script)",972,+02:00,+03:00
+IL,ISR,376,.il,Israel,The State of Israel,UN member state,Israel,Jerusalem (declared),"Yisra'el, ישראל, Isra'iyl, إسرائيل","Yerushalayim, ירושלים, Al-Quds, القُدس","Hebrew, Arabic, (Hebrew script), (Arabic script)",972,+02:00,+03:00
 IT,ITA,380,.it,Italy,The Italian Republic,UN member state,Italy,Rome,Italia,Roma,Italian,39,+01:00,+02:00
 JM,JAM,388,.jm,Jamaica,Jamaica,UN member state,Jamaica,Kingston,Jamaica,Kingston,English,"+1 (658, 876)",−05:00,
 JP,JPN,392,.jp,Japan,Japan,UN member state,Japan,Tokyo,"Nihon, Nippon, 日本","Tōkyō, 東京","Japanese, (Japanese characters)",81,+09:00,
@@ -250,3 +250,4 @@ EH,ESH,732,.eh,Western Sahara (Sahrawi Arab Democratic Republic),The Sahrawi Ara
 YE,YEM,887,.ye,Yemen,The Republic of Yemen,UN member state,Yemen,Sana'a,"Al-Yaman, اليمن","Ṣan‘ā’, ﺻﻨﻌﺎﺀ","Arabic, (Arabic script)",967,+03:00,
 ZM,ZMB,894,.zm,Zambia,The Republic of Zambia,UN member state,Zambia,Lusaka,Zambia,Lusaka,"English, Bemba, Chewa",260,+02:00,
 ZW,ZWE,716,.zw,Zimbabwe,The Republic of Zimbabwe,UN member state,Zimbabwe,Harare,Zimbabwe,Harare,"English, Shona",263,+02:00,
+SP,SPR,NA,NA,Spratly Islands,The Spratly Islands,Disputed,Spratly Islands,,"南沙群岛, Quần đảo Trường Sa, Kepulauan Spratly,Gugusan Semarang, Peninjau, Kapuluan ng Kalayaan",,"Chinese, Vietnamese, Malay, Tagalog",,,

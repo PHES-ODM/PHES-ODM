@@ -1,0 +1,171 @@
+tableName,variableName,variableValue,desc_en,desc_fr
+Sample,type,rawWW,Raw wastewater.,Eau usï¿½e brute
+Sample,type,swrSed,Sediments obtained in sewer.,Sï¿½diments provenant des ï¿½gouts.
+Sample,type,pstGrit,Raw wastewater after a treatment plant's headworks.,Eau usï¿½e aprï¿½s dï¿½grillage et dessablage.
+Sample,type,pSludge,Sludge produced by primary clarifiers.,Boue provenant d'un dï¿½canteur primaire.
+Sample,type,pEfflu,Effluent obtained after primary clarifiers.,Effluent obtenu aprï¿½s un dï¿½canteur primaire.
+Sample,type,sSludge,Sludge produced by secondary clarifiers.,Boue provenant d'un dï¿½canteur secondaire.
+Sample,type,sEfflu,Effluent obtained after secondary clarifiers.,Effluent obtenu aprï¿½s un dï¿½canteur secondaire.
+Sample,type,water,"Non-wastewater, coming from any kind of water body.",Eau non-usï¿½e provenant de toute ï¿½tendue d'eau.
+Sample,type,faeces,Fecal matter.,Matiï¿½re fï¿½cale.
+Sample,type,other,Other type of site. Add description to typeOther.,"Autre type de site d'ï¿½chantillonnage. Ajouter une description dans la colonne ""typeOther"""
+Sample,collection,cpTP24h,A time proportional 24-hour composite sample generally collected by an autosampler.,"Un ï¿½chantillon composite proportionnel au temps prï¿½levï¿½ sur 24 heures, gï¿½nï¿½ralement prï¿½levï¿½ par un auto-ï¿½chantilonneur."
+Sample,collection,cpFP24h,A flow proportional 24-hour composite sample generally collected by an autosampler.,"Un ï¿½chantillon composite proportionnel au dï¿½bit prï¿½levï¿½ sur 24 heures, gï¿½nï¿½ralement prï¿½levï¿½ par un auto-ï¿½chantilonneur."
+Sample,collection,grb,A single large representative grab sample.,Un seul ï¿½chantillon ponctuel reprï¿½sentatif.
+Sample,collection,grbCp8h,"A 8-hour composite with 8 grab samples each taken once per hour, generally manually performed.","Un ï¿½chantillon composite prï¿½levï¿½ sur 8 heures consituï¿½ d'ï¿½chantillons ponctuels collectï¿½s une fois par heure, gï¿½nï¿½ralement prï¿½levï¿½ manuellement."
+Sample,collection,grbCp3h,"A 3-hour composite with 3 grab samples each taken once per hour, generally manually performed.","Un ï¿½chantillon composite prï¿½levï¿½ sur 3 heures consituï¿½ d'ï¿½chantillons ponctuels collectï¿½s une fois par heure, gï¿½nï¿½ralement prï¿½levï¿½ manuellement."
+Sample,collection,grbCp3,A grab-composite sample composed of 3 separate grab samples.,Un ï¿½chantillon composite composï¿½ de 3 ï¿½chantillons ponctuels.
+Sample,collection,mooreSw,Moore swab passive sample.,Un ï¿½chantillon passif collectï¿½ par la mï¿½thode de Moore.
+Sample,collection,other,Other type of collection method. Add description to collectionOther.,"Autre mï¿½thode de collecte. Ajouter une description dans la colonne ""descriptionOther"""
+WWMeasure,fractionAnalyzed,liquid,Liquid fraction,Fraction liquide.
+WWMeasure,fractionAnalyzed,solid,Solid fraction,Fraction solide.
+WWMeasure,fractionAnalyzed,mixed,Mixed/homogenized sample,ï¿½chantillon homogï¿½nï¿½isï¿½/mï¿½langï¿½.
+WWMeasure,type,covN1,SARS-CoV-2 nucleocapsid gene N1,Gï¿½ne nucleocapside N1 du SRAS-CoV-2
+WWMeasure,type,covN2,SARS-CoV-2 nucleocapsid gene N2,Gï¿½ne nucleocapside N2 du SRAS-CoV-2
+WWMeasure,type,covN3,SARS-like coronaviruses nucleocapsid gene N3,Gï¿½ne nucleocapside N3 des virus similaires au SRAS
+WWMeasure,type,covE,SARS-CoV-2 gene region E,Rï¿½gion gï¿½nique E du SRAS-CoV-2
+WWMeasure,type,varB117,Variant B.1.1.7,Variant B.1.1.7
+WWMeasure,type,varB1351,Variant B.1.351,Variant B.1.351
+WWMeasure,type,varP1,Variant P.1,Variant P.1
+WWMeasure,type,covRdRp,SARS-CoV-2 gene region RdRp,Rï¿½gion gï¿½nique RdRp du SRAS-CoV-2
+WWMeasure,type,nPMMoV,Pepper mild mottle virus,Virus de la marbrure lï¿½gï¿½re du piment
+WWMeasure,type,ncrA,cross-assembly phage,CrAssphage
+WWMeasure,type,nbrsv,bovine respiratory syncytial virus,Virus respiratoire syncytial bovin
+WWMeasure,type,wqTS,Total solids concentration.,Solides totaux
+WWMeasure,type,wqTSS,Total suspended solids concentration.,Matiï¿½res en suspension
+WWMeasure,type,wqVSS,Volatile suspended solids concentration.,Matiï¿½res volatiles en suspension
+WWMeasure,type,wqCOD,Chemical oxygen demand.,Demande chimique en oxygï¿½ne
+WWMeasure,type,wqOPhos,Ortho-phosphate concentration.,Concentration d'ortho-phosphates
+WWMeasure,type,wqNH4N,"Ammonium nitrogen concentration, as N.","Concentrsation d'azote ammoniacal, exprimï¿½ en N."
+WWMeasure,type,wqTN,"Total nitrogen concentration, as N.","Azote total, exprimï¿½ en N"
+WWMeasure,type,wqPh,pH,pH
+WWMeasure,type,wqCond,Conductivity,Conductivitï¿½
+WWMeasure,type,temp,"temperature of the sample when the measurement is taken, often when it arrives at the lab.","la tempï¿½rature de l'ï¿½chantillon au moment oï¿½ la mesure est prise, souvent ï¿½ son arrivï¿½e au laboratoire."
+WWMeasure,type,other,Other measurement category. Add description to categoryOther.,"Autre catï¿½gorie de mesure. Ajouter une description de la catï¿½gorie dans la colonne ""categoryOther""."
+WWMeasure,unit,gcPMMoV,Gene or variant copies per copy of PMMoV.,Copies de gï¿½ne ou de variant par copie de PMMoV
+WWMeasure,unit,gcMl,Gene or variant copies per milliliter.,Copies de gï¿½ne ou de variant par millilitre.
+WWMeasure,unit,gcGs,Gene or variant copies per gram solids.,Copies de gï¿½ne ou de variant par gramme de solides.
+WWMeasure,unit,gcL,Gene or variant copies per liter.,Copies de gï¿½ne ou de variant par litre.
+WWMeasure,unit,gcCrA,Gene or variant copies per copy of crAssphage.,Copies de gï¿½ne ou de variant par copie de CrAssphage
+WWMeasure,unit,Ct,Cycle threshold.,Cycle seuil.
+WWMeasure,unit,mgL,Milligrams per liter.,Milligrammes par litre.
+WWMeasure,unit,ph,pH units,Unitï¿½s de pH
+WWMeasure,unit,uScm,Micro-siemens per centimeter.,Microsiemens par centimï¿½tre.
+WWMeasure,unit,detected,Gene copies or variant detected in the sampleGene or variant copiesDetected = 1Gene or variant copiesNot detected = 0.,"Copies de gï¿½ne ou de variant dï¿½tectï¿½ dans ""sampleGene"". 1=Detectï¿½, 0=Non-dï¿½tectï¿½."
+WWMeasure,unit,propVar,Proportion of variant in sample,Proportion du variant dans l'ï¿½chantillon
+WWMeasure,unit,pp,"Percent positive, for Moore swab.",Pourcentage de positifs (mï¿½thode de Moore)
+WWMeasure,unit,pps,"Percent primary sludge, for total solids.",Pourcentage de boues primaire (pour solides totaux)
+WWMeasure,unit,c,temperature in celsius,tempï¿½ratures en degrï¿½s Celsius
+WWMeasure,unit,bool,In cases where a boolean yes or no is required use bool,"Dans les cas oï¿½ un oui ou un non boolï¿½en est requis, utilisez bool"
+WWMeasure,unit,other,Other measurement of viral copies or wastewater treatment plant parameter. Add description to UnitOther.,"Autre mesure de copies virales ou de qualitï¿½ des eaux usï¿½es. Ajouter une description dans ""unitOther"""
+WWMeasure,aggregation,single,"This value is not an aggregate measurement in any way (ie. not a mean, median, max or any other) and can be a replicate value.","La valeur n'a subi aucune agrï¿½gation (donc, la valeur n'est pas une moyenne, un maximum, etc.). La valeur peut ï¿½tre un rï¿½plica."
+WWMeasure,aggregation,mean, Arithmetic mean,Moyenne arithmï¿½tique.
+WWMeasure,aggregation,meanNr,"Arithmetic mean, normalized",Moyenne arithmï¿½tique normalisï¿½e.
+WWMeasure,aggregation,geoMn,Geometric mean,Moyenne gï¿½omï¿½trique.
+WWMeasure,aggregation,geoMnNr,"Geometric mean, normalized",Moyenne gï¿½omï¿½trique normalisï¿½e.
+WWMeasure,aggregation,median,Median,Mï¿½diane.
+WWMeasure,aggregation,min,Lowest value in a range of values,La valeur la plus basse dans un ensemble.
+WWMeasure,aggregation,max,Highest value in a range of values,La valeur la plus haute dans un ensemble.
+WWMeasure,aggregation,sd,Standard deviation,L'ï¿½cart type.
+WWMeasure,aggregation,sdNr,"Standard deviation, normalized",L'ï¿½cart type normalisï¿½.
+WWMeasure,aggregation,other,Other aggregation method. Add description to aggregationOther,"Autre mï¿½thode d'agrï¿½gation. Ajouter une description dans ""aggregationOther""."
+Site,type,airPln,Airplane.,Avion.
+Site,type,corFcil,Correctional facility.,Prison.
+Site,type,school,School,ï¿½cole.
+Site,type,hosptl,Hospital,Hï¿½pital.
+Site,type,ltcf,Long-term care facility.,ï¿½tablissement de soins de longue durï¿½e.
+Site,type,swgTrck,Sewage truck.,Camion de vidange.
+Site,type,uCampus,University campus.,Campus universitaire.
+Site,type,mSwrPpl,Major sewer pipeline.,Collecteur d'ï¿½gouts.
+Site,type,pStat,Pumping station.,Station de pompage.
+Site,type,holdTnk,Hold tank.,Bassin de stockage.
+Site,type,retPond,Retention pond.,Bassin de rï¿½tention.
+Site,type,wwtpMuC,Municipal wastewater treatment plant for combined sewage.,Station de traitement des eaux usï¿½es municipales pour ï¿½gouts combinï¿½s.
+Site,type,wwtpMuS,Municipal wastewater treatment plant for sanitary sewage only.,Station de traitement des eaux usï¿½es municipales pour ï¿½gouts sanitaires seulement.
+Site,type,wwtpInd,Industrial wastewater treatment plant.,Station de traitement des eaux usï¿½es industrielle.
+Site,type,lagoon,Logoon system for extensive wastewater treatment.,Systï¿½me de lagunage pour traitement des eaux usï¿½es.
+Site,type,septTnk,Septic tank.,Fosse septique.
+Site,type,river,"River, natural water body.","Riviï¿½re, ï¿½tendue d'eau naturelle."
+Site,type,lake,"Lake, natural water body.","Lac, ï¿½tendue d'eau naturelle."
+Site,type,estuary,"Estuary, natural water body","Estuaire, ï¿½tendue d'eau naturelle."
+Site,type,sea,"Sea, natural water body.","Mer, ï¿½tendue d'eau naturelle."
+Site,type,ocean,"Ocean, natural water body.","Ocï¿½an, ï¿½tendue d'eau naturelle."
+Site,type,other,Other site type. Add description to typeOther.,"Autre type de site. Ajouter une description dans ""typeOther""."
+Site,SampleTypeDefault,rawWW,Raw wastewater.,Eau usï¿½e brute
+Site,SampleTypeDefault,swrSed,Sediments obtained in sewer.,Sï¿½diments provenant des ï¿½gouts.
+Site,SampleTypeDefault,pstGrit,Raw wastewater after a treatment plant's headworks.,Eau usï¿½e aprï¿½s dï¿½grillage et dessablage.
+Site,SampleTypeDefault,pSludge,Sludge produced by primary clarifiers.,Boue provenant d'un dï¿½canteur primaire.
+Site,SampleTypeDefault,pEfflu,Effluent obtained after primary clarifiers.,Effluent obtenu aprï¿½s un dï¿½canteur primaire.
+Site,SampleTypeDefault,sSludge, Sludge produced by secondary clarifiers.,Boue provenant d'un dï¿½canteur secondaire.
+Site,SampleTypeDefault,sEfflu,Effluent obtained after secondary clarifiers.,Effluent obtenu aprï¿½s un dï¿½canteur secondaire.
+Site,SampleTypeDefault,water,"Non-wastewater, coming from any kind of water body.",Eau non-usï¿½e provenant de toute ï¿½tendue d'eau.
+Site,SampleTypeDefault,faeces,Fecal matter.,Matiï¿½re fï¿½cale.
+Site,SampleTypeDefault,other,Other type of site. Add description to typeOther.,"Autre type de site d'ï¿½chantillonnage. Ajouter une description dans la colonne ""typeOther"""
+Site,SampleCollectionDefault,cpTP24h,A time proportional 24-hour composite sample generally collected by an autosampler.,"Un ï¿½chantillon composite proportionnel au temps prï¿½levï¿½ sur 24 heures, gï¿½nï¿½ralement prï¿½levï¿½ par un auto-ï¿½chantilonneur."
+Site,SampleCollectionDefault,cpFP24h,A flow proportional 24-hour composite sample generally collected by an autosampler.,"Un ï¿½chantillon composite proportionnel au dï¿½bit prï¿½levï¿½ sur 24 heures, gï¿½nï¿½ralement prï¿½levï¿½ par un auto-ï¿½chantilonneur."
+Site,SampleCollectionDefault,grb,A single large representative grab sample.,Un seul ï¿½chantillon ponctuel reprï¿½sentatif.
+Site,SampleCollectionDefault,grbCp8h,"An 8-hour composite with 8 grab samples each taken once per hour, generally manually performed.","Un ï¿½chantillon composite prï¿½levï¿½ sur 8 heures consituï¿½ d'ï¿½chantillons ponctuels collectï¿½s une fois par heure, gï¿½nï¿½ralement prï¿½levï¿½ manuellement."
+Site,SampleCollectionDefault,grbCp3h,"A 3-hour composite with 3 grab samples each taken once per hour, generally manually performed.","Un ï¿½chantillon composite prï¿½levï¿½ sur 3 heures consituï¿½ d'ï¿½chantillons ponctuels collectï¿½s une fois par heure, gï¿½nï¿½ralement prï¿½levï¿½ manuellement."
+Site,SampleCollectionDefault,grbCp3,A grab-composite sample composed of 3 separate grab samples.,Un ï¿½chantillon composite composï¿½ de 3 ï¿½chantillons ponctuels.
+Site,SampleCollectionDefault,mooreSw,Moore swab passive sample.,Un ï¿½chantillon passif collectï¿½ par la mï¿½thode de Moore.
+Site,SampleCollectionDefault,other,Other type of collection method. Add description to collectionOther.,"Autre mï¿½thode de collecte. Ajouter une description dans la colonne ""descriptionOther"""
+Site,MeasureFractionAnalyzedDefault,liquid,Liquid fraction,Fraction liquide.
+Site,MeasureFractionAnalyzedDefault,solid,Solid fraction,Fraction solide.
+Site,MeasureFractionAnalyzedDefault,mixed,Mixed/homogenized sample,ï¿½chantillon homogï¿½nï¿½isï¿½/mï¿½langï¿½.
+SiteMeasure,type,envTemp,Environmental temperature.,Tempï¿½rature ambiante.
+SiteMeasure,type,envRnF,"Rain fall, i.e. amount of precipitation in the form of rain.",Pluie (toute prï¿½cipitation sous forme liquide).
+SiteMeasure,type,envSnwF,"Snow fall, i.e. amount of precipitation in the form of snow.",Neige (toute prï¿½cipitations sous forme solide).
+SiteMeasure,type,envSnwD,Total depth of snow on the ground.,ï¿½paisseur de neige au sol.
+SiteMeasure,type,wwFlow,Flow of wastewater.,Dï¿½bit d'eau usï¿½e.
+SiteMeasure,type,wwTemp,Temperature of the wastewater.,Tempï¿½rature de l'eau usï¿½e.
+SiteMeasure,type,wwTSS,Total suspended solids concentration of the wastewater.,Matiï¿½res en suspension
+SiteMeasure,type,wwCOD,Chemical oxygen demand of the wastewater.,Demande chimique en oxygï¿½ne
+SiteMeasure,type,wwTurb,Turbidity of the wastewater.,Turbiditï¿½
+SiteMeasure,type,wwOPhos,Ortho-phosphate concentration.,Concentration d'ortho-phosphates
+SiteMeasure,type,wwNH4N,"Ammonium nitrogen concentration, as N.","Concentrsation d'azote ammoniacal, exprimï¿½ en N."
+SiteMeasure,type,wwTN,"Total nitrogen concentration, as N.","Azote total, exprimï¿½ en N"
+SiteMeasure,type,wwpH,pH of the wastewater.,pH
+SiteMeasure,type,wwBOD5t,5 day total biochemical oxygen demand,Demande biochimique totale en oxygene sur 5 jours
+SiteMeasure,type,wwBOD5c,5 day carbonaceous biochemical oxygen demand,Demande biochinique carbonnee en oxygene sur 5 jours
+SiteMeasure,type,wwPtot,Total phosphates,Phosphates totaux
+SiteMeasure,type,wwPP,Total phosphorous,Phosphore total
+SiteMeasure,type,wwCond,Conductivity of the wastewater.,Conductivitï¿½
+SiteMeasure,unit,c,Degrees Celcius,Degrés Celcius
+SiteMeasure,unit,mm,Millimeters,Millimètres
+SiteMeasure,unit,m3H,Cubic meters per hour,Mètres cubes par heure
+SiteMeasure,unit,m3D,Cubic meters per day,Mètres cubes par jour
+SiteMeasure,unit,mgL,Milligrams per liter,Milligrammes par litre
+SiteMeasure,unit,pH,pH units,Unités de pH
+SiteMeasure,unit,usCM,Micro-siemens per centimeter,Micro-siemens par centimètre
+SiteMeasure,aggregation,single,"This value is not an aggregate measurement in any way (ie. not a mean, median, max or any other) and can be a replicate value.","La valeur n'a subi aucune agrï¿½gation (donc, la valeur n'est pas une moyenne, un maximum, etc.). La valeur peut ï¿½tre un rï¿½plica."
+SiteMeasure,aggregation,mean,Arithmetic mean,Moyenne arithmï¿½tique.
+SiteMeasure,aggregation,geoMn,Geometric mean,Moyenne gï¿½omï¿½trique.
+SiteMeasure,aggregation,median,Median,Mï¿½diane.
+SiteMeasure,aggregation,min,Lowest value in a range of values,La valeur la plus basse dans un ensemble.
+SiteMeasure,aggregation,max,Highest value in a range of values,La valeur la plus haute dans un ensemble.
+SiteMeasure,aggregation,sd,Standard deviation,L'ï¿½cart type.
+SiteMeasure,aggregation,other,Other aggregation method. Add description to aggregationOther,"Autre mï¿½thode d'agrï¿½gation. Ajouter une description dans ""aggregationOther""."
+AssayMethod,unit,gcPMMoV,Gene copies per copy of PMMoV.,Copies de gï¿½ne ou de variant par copie de PMMoV
+AssayMethod,unit,gcMl,Gene copies per milliliter.,Copies de gï¿½ne ou de variant par millilitre.
+AssayMethod,unit,gcGms,Gene copies per gram solids.,Copies de gï¿½ne ou de variant par gramme de solides.
+AssayMethod,unit,gcL,Gene copies per liter.,Copies de gï¿½ne ou de variant par litre.
+AssayMethod,unit,gcCrA,Gene copies per copy of crAssphage.,Copies de gï¿½ne ou de variant par copie de CrAssphage
+AssayMethod,unit,other,Other measurement of viral copies. Add description to unitOther.,"Autre mesure de copies virales ou de qualitï¿½ des eaux usï¿½es. Ajouter une description dans ""unitOther"""
+Instrument,type,online, An online sensor,Capteur en ligne.
+Instrument,type,lab,Offline laboratory analysis,Analyse en laboratoire.
+Instrument,type,hand,A handheld measurement analyzer.,Mesure ï¿½ l'aide d'un capteur manuel.
+Instrument,type,atline,An atline analyzer with sampler.,Mesure ï¿½ l'aide d'un ï¿½chantillonneur.
+Instrument,type,other,An other type of measurement instrument. Add description to instrumentTypeOther.,"Autre type d'appareil de mesure. Ajouter une description dans ""instrumentTypeOther"""
+Polygon,type,swrCat,Sewer catchment area.,Zone de captage d'un rï¿½seau d'ï¿½gout.
+Polygon,type,hlthReg,Health region served by the sewer network,Rï¿½gion de santï¿½ desservie par le rï¿½seau d'ï¿½gout.
+CovidPublicHealthData,type,conf,Number of confirmed cases. This measure should be accompanied by dateType.,"Nombre de cas confirmï¿½s. La mesure devrait ï¿½tre accompagnï¿½e d'une valeur dans la colonne ""dateType"""
+CovidPublicHealthData,type,active,Number of active cases.,Nombre de cas actifs.
+CovidPublicHealthData,type,test,Number of tests performed.,Nombre de tests effectuï¿½s.
+CovidPublicHealthData,type,posTest,Number of positive tests.,Nombre de tests positifs.
+CovidPublicHealthData,type,pPosRt,Percent positivity rate.,Pourcentage de positivitï¿½ des tests.
+CovidPublicHealthData,type,hospCen,Hospital census or the number of people admitted with covid-19.,Rencensement des patients admis ï¿½ un hï¿½pital avec la COVID-19.
+CovidPublicHealthData,type,hospAdm,Hospital admissions or patients newly admitted to hospital.,Nombre d'admissions ou nombre de patients admis ï¿½ l'hï¿½pital.
+CovidPublicHealthData,dateType,episode ,"Episode date is the earliest of onset, test or reported date.","Date estimï¿½e ï¿½ laquelle l'ï¿½pisode de maladie s'est dï¿½clarï¿½. Habituellement calculï¿½ en se basant sur la date des premiers symptï¿½mes, la date de test ou la date de reportage. "
+CovidPublicHealthData,dateType,onset,"Earliest that symptoms were reported for this case. This data is often not known and reported. In lieu, episode is used.",Date ï¿½ laquelle les premiers symptï¿½mes apparaissent. Cette donnï¿½e est souvent inconnue. La date d'ï¿½pisode est alors communï¿½ment utilisï¿½e.
+CovidPublicHealthData,dateType,report,"Date that the numbers were reported publicly. Typically, reported data and this measure is most commonly reported and used.",Date ï¿½ laquelle la donnï¿½e a ï¿½tï¿½ reportï¿½e ï¿½ la santï¿½ publique. Cette mesure est communï¿½ment utilisï¿½e.
+CovidPublicHealthData,dateType,test,Date that the covid-19 test was performed.,Date ï¿½ laquelle le test de COVID-19 a ï¿½tï¿½ effectuï¿½.
