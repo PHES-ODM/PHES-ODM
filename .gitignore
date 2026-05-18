@@ -16,3 +16,6 @@ template/~$attributesDetails.xlsx
 
 .devcontainer/*
 .python-version
+
+# Local scratch / drafts (not committed)
+tmp/

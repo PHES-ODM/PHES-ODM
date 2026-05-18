@@ -26,4 +26,4 @@ This repo follows the [git feature branch workflow](https://www.atlassian.com/gi
 
 ### New Version Checklist
 
-* Update the files in the [data](https://github.com/Big-Life-Lab/PHES-ODM/tree/main/data) folder. Each file should have the new version number attached at the end. For example, if the new version is `2.1.0`, then the `parts.csv` file should be named `parts-2.1.0.csv`.
+* Update the files in the [dictionary-tables](https://github.com/PHES-ODM/PHES-ODM/tree/main/dictionary-tables) folder. Each file should have the new version number attached at the end. For example, if the new version is `3.1.0`, then the `ODM_parts.csv` file should be copied as `ODM_parts_v3.1.0.csv`.
