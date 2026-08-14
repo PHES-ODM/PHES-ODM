@@ -6,9 +6,14 @@ matching schema-{postgres,sqlite,mysql}.sql's table/column definitions.
 Handles, empirically discovered during generation (see conversation for detail):
 - Mixed encoding in ODM_translations.csv (21 bytes are Mac OS Roman inside an
   otherwise-UTF-8 file) — recovered byte-by-byte, not blanket-decoded.
-- 3 orphaned FK rows in ODM_sets.csv (partIDs 'gcDay100K'/'mVolt' referenced but
-  not present in ODM_parts.csv) — excluded, logged below, NOT silently dropped
-  without a trace.
+- 3 mis-cased FK rows in ODM_sets.csv ('gcDay100K'/'mVolt') that don't match the
+  real partIDs' actual casing in ODM_parts.csv ('gcDay100k'/'mvolt' — both exist,
+  just lowercase where sets.csv has them capitalized). Confirmed with the
+  maintainer (2026-08-13), who's correcting the casing in ODM_sets.csv for the
+  next release — at that point these rows stop being orphans on their own and
+  this exclusion becomes a no-op; nothing to remove here, the check is
+  regenerated from the live CSVs every run anyway. Excluded for now, logged
+  below, NOT silently dropped without a trace.
 - A synthetic 'pipelineHeader' category (calcTypeSet) + its ODM_sets.csv
   membership row, added per the pipelineID/calculationID PK/FK fix
   (https://odm.discourse.group/t/pipelineid-primary-key-x-foreign-key-issues/200)
