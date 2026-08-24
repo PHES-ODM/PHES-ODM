@@ -1,4 +1,5 @@
-﻿translationID,lang,partID,label,partDesc,partInstr,firstReleased,lastUpdated,changes,notes
+﻿Version,2.3.0,,,,,,,,
+translationID,lang,partID,label,partDesc,partInstr,firstReleased,lastUpdated,changes,notes
 enga1306s,eng,a1306s,a1306s delta-variant gene target,a1306s delta-variant mutation gene target,NA,2.0.0,2.0.0,added in V2.0.0,
 enga1918v,eng,a1918v,a1918v delta-variant gene target,a1918v delta-variant mutation gene target,NA,2.0.0,2.0.0,added in V2.0.0,
 enga2710t,eng,a2710t,a2710t omicron-variant gene target,a2710t omicron-variant mutation gene target,NA,2.0.0,2.0.0,added in V2.0.0,
@@ -991,7 +992,7 @@ engphone,eng,phone,Country national phone prefix,International dialing code for 
 engphos,eng,phos,Total phosphorous,Total phosphorous,NA,1.1.0,2.0.0,"description wording, structure",
 engphostot,eng,phostot,Total Phosphates,Total phosphates,NA,1.1.0,2.0.0,"description wording, structure",
 engphred,eng,phred,PHRED quality score,PHRED Quality Score For Sequencing,NA,2.0.0,2.0.0,added in V2.0.0,
-engphy,eng,phy,Physical property,A physical property or object not characterized by life or chemistry.	,NA,2.0.0,2.0.0,added in V2.0.0,
+engphy,eng,phy,Physical property,"A physical property or object not characterized by life or chemistry.	",NA,2.0.0,2.0.0,added in V2.0.0,
 engphysical,eng,physical,Physical class,Measures and methods related to generic physical properties.,NA,2.0.0,2.0.0,added in V2.0.0,
 engpK,eng,pK,Primary key,Primary key for a table. ,All report tables have a primary key. Each row in a report table has unique identifier recorded in the primary key. ,2.0.0,2.0.0,added in V2.0.0,
 engplasmodium,eng,plasmodium,Plasmodium,Plasmodium,NA,2.2.0,2.2.0,added in V2.2.0,
