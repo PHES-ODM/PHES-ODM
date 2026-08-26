@@ -56,7 +56,7 @@ The ODM is comprised of 15 report tables and six look-up tables, linked to each 
 
 See [contributing](CONTRIBUTING.md) and [Code of conduct](CODE_OF_CONDUCT.md) for more information.
 
-- Issues, suggestions and pull requests are welcomed. use [GH issues](https://github.com/PHES-ODM/PHES-ODM/issues), the [ODM Discourse channel](https://odm.discourse.group) or email [phesd_odm@ohri.ca](mailto:phesd_odm@ohri.ca).
+- Issues, suggestions and pull requests are welcomed. use [GH issues](https://github.com/PHES-ODM/PHES-ODM/issues), the [ODM Discourse channel](https://odm.discourse.group) or email [odm-info@phes-odm.org](mailto:odm-info@phes-odm.org).
 - Follow the [`dev`](https://github.com/PHES-ODM/PHES-ODM/tree/dev) branch for upcoming changes. Also follow version changes in [issues](https://github.com/PHES-ODM/PHES-ODM/issues), [discussions](https://github.com/PHES-ODM/PHES-ODM/discussions), and [projects](https://github.com/PHES-ODM/PHES-ODM/projects).
 - [An international steering committee](https://github.com/PHES-ODM/PHES-ODM/wiki/Steering-Group-Members) guides the development of the data model.
 - Working groups consist of a regular weekly meeting with ODM developers and users. Add hoc working groups are created to develop specific sections of the ODM. An example of the working group the development of quality assurance and control measures.
