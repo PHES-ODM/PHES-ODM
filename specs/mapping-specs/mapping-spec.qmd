@@ -1,0 +1,171 @@
+---
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+# Requirement Gathering Document
+
+## 1. Purpose
+
+The purpose of this document is to capture the requirements for the new Python software library to map and automatically transform data from one data dictionary to another.
+The main dictionary we will map to is the Population Health Environmental Surveillance - Open Data Dictionary (PHES-ODM), Version 2.
+
+## 2. Project Overview
+
+The project involves creating a Python software library that aids in mapping data from one data dictionary to another, focusing on the Population Health Environmental Surveillance - Open Data Dictionary (PHES-ODM).
+This mapping and data transformation application will need to do three kinds of general mapping: 1) mapping from previous version of the PHES-ODM to the current version, 2) mapping to and from wide- and long-formats of PHES-ODM version 2, and 3) mapping from other other data formats to PHES-ODM version 2.
+The library should adhere to Open Science and FAIR (Findable, Accessible, Interoperable, Reusable) data principles.
+
+## 3. Stakeholders
+
+Stakeholders will include: - Wastewater surveillance programs that hold data in ODM version 1.1 who want to map their data to version 2.
+- Waster surveillance and laboratories that hold data in non-ODM format who want to map their data to ODM format.
+- People/programs who hold data in other published dictionaries who want to map/transform their data to ODM or from ODM to their dictionary.
+- People who have ODM data in wide format to wish to map their data to ODM long format.
+- Data generators/wastewater surveillance labs who want to automate transformation of raw qPCR machine outputs to the ODM.
+
+## 4. Functional Requirements
+
+-   The library should be able to read and write PHES-ODM v2 data dictionaries.
+-   The library should be able to map data between PHES-ODM and other data dictionaries.
+-   THe library should include provisions from previous ODM-suite tools to map from raw qPCR outputs to ODM v2.
+-   The library should follow the FAIR data principles, ensuring that the data and the library itself are Findable, Accessible, Interoperable, and Reusable.
+-   The library should include functions to validate mappings against the PHES-ODM.
+-   The library should include documentation with clear examples of how to use the library.
+
+## 5. Non-Functional Requirements
+
+-   The library should be implemented in Python (or R using re-code flow).
+-   The library should be easy to install and use.
+-   The library should be open source and follow open science principles.
+-   The library should be performant, even with large data dictionaries.
+-   Eventual long-term goal will be for the library to function as a web application.
+
+# Scoping Document
+
+## 1. Project Objective
+
+The objective of this project is to create a Python library that aids users in mapping data from one data dictionary to another, primarily focusing on the PHES-ODM v2.
+The goal is not only to provide a tool for data mapping and transformation, but also to create a platform that follows open science principles and promotes the FAIR data principles.
+
+## 2. Deliverables
+
+The main deliverable is a Python library, along with its documentation.
+The library should be compatible with PHES-ODM v2 and have the ability to map to other data dictionaries, and to-and-from other data formats (ie. long-format, wide-format, qPCR output format).
+
+## 2. File format supported
+
+-   CSV
+-   Excel
+-   PDF (for qPCR)
+
+## 3. Types of database or dictionaries supported supported
+
+i)  ODM version to version (i.e. version 1 to version 2).
+ii) ODM wide to long formats, and vice versa.
+iii) Mixed ODM wide and long formats to ODM long.
+iv) User generated tables to ODM (i.e. Quebec site that do not use a well-specified dictionary; rather they have generated their own in-house dictionary).
+v)  qPCR machine raw outputs to ODM version 2 (current capacity exists already for the following machines: AriaMx, BioRad, LightCycler, and QIAquant).
+vi) Other published dictionaries or databases (specifically:
+    a.  [NCBI](https://www.protocols.io/run/ncbi-submission-protocol-for-sars-cov-2-wastewater-citcueiw?step=2.1)
+    b.  [NWSS](https://www.cdc.gov/nwss/reporting.html)
+    c.  [PHA4GE](https://docs.google.com/spreadsheets/d/17PuBcA0cCT-j9hV5tbwMFKtwWwKE-a_MYRqOOsIxj7c/edit#gid=136997361)
+    d.  [NORMAN](https://www.norman-network.com/nds/sars_cov_2/)
+    e.  [W-Sphere](https://sphere.waterpathogens.org/wsphere-data-template)
+    f.  [ENA](https://ena-docs.readthedocs.io/en/latest/submit/general-guide/metadata.html) The dictionaries for a-c are high priority, while d-f are lower priority. For a conceptual model of the work, please see @sec-appendix).
+
+## 4. Out of Scope
+
+The project will not include:
+
+-   Direct support or tools for data dictionaries other than PHES-ODM v2. While the tool should be flexible enough to handle other dictionaries, specific support for these is out of scope.
+-   The project won't handle data cleaning or pre-processing tasks.
+
+## 5. Project Constraints
+
+-   The project will be completed using Python.
+-   The library will be built with the intent of open sourcing it.
+
+## 6. Assumptions
+
+-   The project assumes that users have a basic understanding of Python and data dictionaries.
+-   It is assumed that PHES-ODM v2 is the primary dictionary to which data will be mapped.
+
+## 7. Dependencies
+
+-   The project may depend on the ongoing maintenance and updates of the PHES-ODM v2.
+-   The project will follow the approach of the previously developed R package called 'recodeflow' where possible.
+
+# Appendix - Conceptual model for the mapping libraries {#sec-appendix}
+
+A conceptual model of how mapping will for for the ODM core formats can be found below in figure 1.
+
+![**Figure 1 - Mapping PHES-ODM**](assets/mapping diagram.png){fig-align="center"}
+
+The two central beige rectangles represent the two core PHES-ODM formats, long-format and wide-format.
+Transformation between these two formats is managed by **Process Alpha**.
+
+The red rectangles in figure 1 are files available in Microsoft Excel format (either .xls or .xlsx).
+These data formats are all generated by our collaborating partners, and so should be very close to the standard PHES-ODM format.
+They will be mapped using either **Process A** or **Process B**.
+
+The blue rectangles are files available in a CSV format.
+The files use other common, non-ODM data dictionaries for wastewater surveillance data.
+These are mapped using **Process C**.
+
+The orange rectangle are raw PCR machine output files, available in different formats depending on user specifications or machine type.
+Formatting ranges from PDF and excel, to proprietary formats.
+These are mapped using **Process D**.
+
+## Process Alpha
+
+This mapping process moves between ODM long- and wide-formats.
+For mapping from long- to wide-format, the process needs to be able to:
+
+-   String together the source table short name and table headers in snake case
+
+-   String together the part IDs of related metadata in snake case, in line with the wide-name formula for specific part types
+
+For example, for attributes like `sampleID` would be mapped to `sm_sampleID` because it is in the `samples` table. Or for measures the formula for wide-names is `compartment_specimen_fraction_measure_unit_aggregation_index_attribute`. 
+
+Conversely, this process needs to be able to move in the opposite direction. For this it will need the functions:
+
+-   parse the wide names and break the pieces apart and sort each piece of the wide name formula into the long-format.
+
+For example the wide name for the measure `wat_si_NR_cod_mgL_m_NR_value`, the process needs to take each piece and put `wat` as the value for component, `si` for specimen, `NR` for fraction analyzed, `cod` for the measurement, `mgL` for unit, `m` for aggregation, `NR` for index, and then the column value into the value header.
+
+## Process A
+
+Process A is for mapping from wide-format templates generated by our partners. For this process, an ODM wide-name needs to be matched or mapped to each column. This should be pretty straight forward, given that these are already made by ODM user. From there, this is just the Process Alpha. this requires the function:
+
+-   Match the column names in the template to the appropriate ODM wide-name, and then run the matched wide-names and values through Process Alpha.
+
+## Process B
+
+Process B is for mapping data from our partners. This should be both easier and slightly more complicated. For this process we first need to determine where the data structure being used by our partners differs from the ODM. From there, these differences can be mapped over. Without examples, it's hard to conceive of what exact functions might be necessary.
+
+## Process C
+
+This process maps data from other popular data formats into ODM. Because these variables can be in multiple tables and vary from how ODM data is recorded, mapping from those dictionaries to ODM wide-format is the logical first step. From process C the data is then passed to Process Alpha. The functionalities required for this process are:
+
+-   Match the column names in the template to the appropriate ODM wide-name, and then run the matched wide-names and values through Process Alpha.
+-   split single columns/values into 2+ values in multiple columns 
+-   combine multiple columns/values into a single column
+-   potentially run caluculations to transform units of values
+
+## Process D
+
+This maps to ODM directly from the PCR machine output files. The data from PCR output files is pretty granular, so it can be more easily mapped to ODM long-formal. For this process, we need the following functions:
+
+-   to be able to generate a csv or excel format of the PCR machine output
+-   Match the various output measures and values to parts within the ODM 
+-   auto-generate measure report IDs, and potentially sample IDs, to link the measures that are reported across multiple rows
+
+## Final Note
+
+I am willing to contend that several of these processes might actually be collapsible into a single process or split into multiple, this is just a starting point for the discussion. 
+
+To address the various functions required for mapping, `recodeFlow` can manage all the renaming/different name matching functions. But it is lacking in areas needed for the more complicated parts or process alpha and process c. `
+
+
