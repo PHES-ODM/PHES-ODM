@@ -1,0 +1,34 @@
+# Common Bugs and where to find them.
+
+## Introduction
+
+The PHES-ODM automatic deployment has files sheet validation as well as file creation. This document is intended to help you identify and fix common bugs that may occur during the deployment process.
+
+The warning messages are stored within a log file which is located at the R-paclage directory. The log file is named "log" and is updated every time the deployment script is run.
+
+## Common Bugs
+
+### 1. 'Multiple dictionaries found, only one dictionary should be stored.'
+This is encountered when multiple files matching the dictionary file regex are found in the dictionary directory. The dictionary directory is located on osf however a local one can be passed when debugging. The current regex is "ODM_dictionary_(\\d.*?).xlsx".
+To resolve this issue check that only one dictionary is present within the passed directory path, or withing the "dev-release" directory on osf.
+
+### 2. 'No valid files were detected. Make sure the dictionary file is named correctly.'
+This is encountered when no files matching the dictionary file regex are found in the dictionary directory. The dictionary directory is located on osf however a local one can be passed when debugging. The current regex is "ODM_dictionary_(\\d.*?).xlsx".
+
+### 3. 'Dictionary file name version does not reflect version in summary sheet'
+The version number in the dictionary file name is the number after the last underscore. The version number in the summary sheet is the number in the "Version" column. To resolve this issue check that the version number in the dictionary file name matches the version number in the summary sheet.
+
+### 4. 'File ID: {fileID} has an invalid destination set, and will not be exported.'
+This is encountered when the destination column in the files sheet is not set to either of the valid destinations("ODM" or "github"). Utilizing the provided fileID(Unique identifier used in the files sheet) check that the destination column is set to either "ODM" or "github" for the supplied file. Note that the process will continue and this sheet will not be exported.
+
+### 5. '{single_part} does not have a matching sheet but is part of {set_name} set, which was selected to be exported. This sheet cannot be exported.'
+This is encountered when a sheet that is part of a set is not present in the dictionary file. To resolve this issue check that {single_part} named sheet is present in the dictionary file. Alternatively it could be removed from the {set_name} set in the sets sheet. Note that the process will continue and this sheet will not be exported however the other sheets of the set will.
+
+### 6. '{single_part} is missing from the parts sheet but is present in the {set_name} set, therefore it cant be exported.'
+This is encountered when a {single_part} part listed in the sets sheet under a selected {set_name} set is not present in the parts sheet. To resolve this issue check that {single_part} is present in the parts sheet. Alternatively it could be removed from the {set_name} set in the sets sheet. Note that the process will continue and this sheet will not be exported however the other sheets of the set will.
+
+### 7. '{partID} is recorded for csv but is found in sets. csv does not support exporting a set.'
+This is encountered when a {partID} part is found in the sets sheet. Passing a set to the partID column in the files sheet causes that entire set to be exported. This however is only possible for excel files. To resolve this issue consider either passing a non set name part in partID column or setting the file type to excel.
+
+### 8. '{partID} has an unrecognized fileType of {file_type} and can't be exported.'
+This is encountered when a {partID} part has an unrecognized fileType. To resolve this issue check that the fileType column in the files sheet is set to either "excel" or "csv".

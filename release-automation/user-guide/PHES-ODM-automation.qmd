@@ -1,0 +1,105 @@
+# Release Automation User Guide
+
+This user guide provides an overview of the software system designed to automate the release process for the Ottawa Data Model (ODM). The system aims to simplify and streamline the release of the ODM dictionary, which is essential for wastewater surveillance and public health monitoring. 
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Context](#context)
+3. [User Interactions](#user-interactions)
+3. [Software Constraints](#software-constraints)
+4. [Features](#features)
+    - [RA-1: Triggering the Process](#ra-1-triggering-the-process)
+    - [RA-2: Creating the Release Files](#ra-2-creating-the-release-files)
+    - [RA-3: Deploying the Files to GitHub](#ra-3-deploying-the-files-to-github)
+    - [RA-4: Deploying the Files to OSF](#ra-4-deploying-the-files-to-osf)
+    - [RA-5: Triggering a PR in the PHES-ODM-Doc repo](#ra-5-triggering-a-pr-in-the-phes-odm-doc-repo)
+    - [RA-6: Triggering a PR in the PHES-ODM-Validation repo](#ra-6-triggering-a-pr-in-the-phes-odm-validation-repo)
+5. [Reference](#reference)
+
+## 1. Introduction <a name="introduction"></a>
+
+The Release Automation system is designed to automate the release process for the Ottawa Data Model (ODM), a critical component of wastewater surveillance for monitoring infectious diseases. This guide explains how to use the system, context, user interactions, software constraints, and features.
+
+## 2. Context <a name="context"></a>
+
+The ODM dictionary is an open-source data model used for representing wastewater surveillance data, and its documentation is available online [here](https://github.com/Big-Life-Lab/PHES-ODM-Doc). The dictionary is implemented as an Excel document, and its main purpose is to provide machine-actionable data model details, including data templates for users to input their wastewater data.
+
+Releasing a new version of the dictionary involves converting the Excel document to multiple output formats and uploading the release files to various locations. The current manual process is time-consuming and error-prone. Automating this process aims to improve the quality of releases and save time for the dictionary staff.
+
+## 4. User Interactions <a name="user-interactions"></a>
+
+Users will interact with the software system in two main ways:
+
+1. **Triggering a Release**: Users can initiate a new release using the GitHub Actions tab. This then creates a new release branch to be reviewed in a PR.
+2. **Merging a Release**: After reviewing the release changes, users can merge the release by merging the release pull request (PR). Once a release branch is merged a second action is triggered that is responsible for uploading the new files to OSF.
+
+## 5. Software Constraints <a name="software-constraints"></a>
+
+The software system operates under the following constraints:
+
+- The system uses GitHub Actions as its continuous integration tool.
+- The system is written in R.
+
+## 6. Features <a name="features"></a>
+
+The Release Automation system comprises several features to automate the release process. Each feature is identified with a unique code (e.g., RA-1, RA-2).
+
+### RA-1: Triggering the Process <a name="ra-1-triggering-the-process"></a>
+
+To trigger the release process, users need to provide the following inputs:
+
+1. Link to the OSF repo containing the dictionary. Currently, only links to an OSF repo are allowed. The Excel dictionary used for the release is in the OSF.io "dev-release" folder. For example, "ODM_dev-dictionary-2.0.0.xlsx."
+2. The OSF personal access token to use. This token is required for system access to the repository and performing necessary operations.
+
+Both of these inputs are stored as github secrets: `OSF_REPO_LINK` and `OSF_TOKEN`.
+
+### RA-2: Creating the Release Files <a name="ra-2-creating-the-release-files"></a>
+
+The creation of release files is the first step in the release process. These files are generated from the Excel dictionary provided by the user. The "files" tab in the document contains all the metadata needed for this step. The structure of the "files" tab is documented in the "files sheet" section.
+
+### RA-3: Deploying the Files to GitHub <a name="ra-3-deploying-the-files-to-github"></a>
+
+Files designated for GitHub deployment are uploaded to the PHES-ODM repo. 
+
+New files should be created and placed in their correct locations. A new branch named "release-{version}" is created from "main," and the files are added to this branch. A commit is made with the new files, labeled "[BOT] release-{version." A pull request (PR) is created from the new branch into "main," titled "[BOT] Release {version."
+
+### RA-4: Deploying the Files to OSF <a name="ra-4-deploying-the-files-to-osf"></a>
+
+Files designated for OSF deployment are uploaded to OSF repositorie.
+
+All files are created and placed in their correct locations. And the previes version of the files are archieved. Inside the "Archieved releases" folder inside a subdirectory with name of "release_{version}"
+
+## 7. Reference <a name="reference"></a>
+
+This section contains reference material used throughout the document, including sheet data types and details about the "files" sheet in the dictionary.
+
+### Sheet Data Types
+
+- **string**
+- **templateString
+
+**: A string with placeholders for data to be filled in by a program.
+- **categorical**: A column with a limited set of allowed values.
+- **list**: A column that encodes multiple values separated by a semicolon.
+- **nullable**: Allows a column to have null values.
+
+### Template Variables
+
+- **version**: The current release version, obtained from the "version" column in the "summary" sheet in the dictionary.
+
+### Files Sheet
+
+This section documents details about the different columns in the "files" sheet in the dictionary. This sheet contains metadata used to build and deploy release files.
+
+- **ID**: The unique identifier for the file.
+- **label**: A human-readable description for the file.
+- **name**: The name of the file in the release. It can contain templateString. For example "ODM_{version}.xlsx".
+- **type**: The file type (categorical: excel or csv). Currently only these file types are supported.
+- **part**: The name of the part that identifies what sheet(s) from the dictionary should be included in the file. In cases where this part is a set an excel file is created with all parts belonging to that set as seperate sheets.
+- **addHeaders**: Contents of an optional header row to add as the first line in the file. This currently only applies to csv files.
+- **destinations**: Where the file will be uploaded (categorical: osf, github). Only these destinations are supported.
+- **osfLocation**: The path for the file on OSF. This is only required if the file is being uploaded to OSF. The path should be relative to the root of the "Current Release" folder.
+- **githubLocation**: The path for the file on GitHub. This is only required if the file is being uploaded to GitHub. The path should be relative to the root of the repository.
+
+For further details on the ODM dictionary please refer to the ODM documentation found [here](https://docs.phes-odm.org/).
