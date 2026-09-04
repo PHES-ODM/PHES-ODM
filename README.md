@@ -50,7 +50,7 @@ The ODM is comprised of 15 report tables and six look-up tables, linked to each 
 
 ![Schematic representation of the ODM](img/subway.png)
 
-![Entity Relationship Diagram](doc-source/ODM_ERD_V2.0.0.png)
+See the current [Entity Relationship Diagram](doc-source/ODM_ERD_V3.0.1.pdf), or the [minimal ERD](doc-source/ODM_ERD_V3.0.0_minimal.pdf) for a compact overview of the core tables.
 
 ## Collaborate
 
