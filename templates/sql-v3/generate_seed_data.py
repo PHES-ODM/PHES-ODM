@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generate seed-{postgres,sqlite,mysql}-v<version>.sql from the live
-dictionary-tables/*.csv, matching schema-{postgres,sqlite,mysql}.sql's
+dictionary-tables/*.csv, matching ../../database-schemas/schema-{postgres,sqlite,mysql}-v<version>.sql's
 table/column definitions. <version> is read from the CSVs' own
 "Version,X.Y.Z" stamp row (see read_version()); any previously-generated
 seed file for a different version is moved to templates/archived templates/

@@ -1,0 +1,55 @@
+name: Validate dictionary rules
+
+# Checks dictionary-tables/*.csv against internal_structure_rules/DICTIONARY_VALIDATION.md
+# on every pull request that touches them. HARD rule violations fail this
+# check (blocking merge, since this workflow's job must pass); SOFT findings
+# are printed as advisory warnings in the job summary and never fail it.
+#
+# This is a syntax/structure/closure check, not a semantic one -- it proves
+# the CSVs are internally consistent with the documented rules, not that
+# any specific edit is a good idea. It complements, not replaces, the
+# sync-odm-sql-templates skill's empirical schema-level validation and a
+# human reviewer's read of the actual PR diff.
+#
+# See .github/scripts/validate_dictionary_rules.py for the implementation --
+# every check function is named after the rule ID(s) it enforces, so a
+# failure here points straight back to the exact rule in
+# internal_structure_rules/DICTIONARY_VALIDATION.md.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "dictionary-tables/ODM_*.csv"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run rule validator
+        run: |
+          set -o pipefail
+          python3 .github/scripts/validate_dictionary_rules.py 2>&1 | tee /tmp/validate_output.txt
+
+      - name: Write job summary
+        if: always()
+        run: |
+          {
+            echo "### Dictionary rule validation"
+            echo
+            echo '```'
+            cat /tmp/validate_output.txt
+            echo '```'
+            echo
+            echo "See [\`internal_structure_rules/DICTIONARY_VALIDATION.md\`](https://github.com/${{ github.repository }}/blob/${{ github.event.pull_request.head.sha || github.sha }}/internal_structure_rules/DICTIONARY_VALIDATION.md) for what each rule ID means."
+          } >> "$GITHUB_STEP_SUMMARY"
