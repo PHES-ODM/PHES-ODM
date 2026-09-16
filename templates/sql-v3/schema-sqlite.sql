@@ -62,7 +62,7 @@ CREATE TABLE countries (
   "isoCode"       CHAR(2)      PRIMARY KEY,  -- ISO 3166-1 alpha-2
   "isoCodeX"      CHAR(3),     -- ISO 3166-1 alpha-3
   "numCode"       CHAR(3),     -- ISO 3166-1 numeric
-  tld             VARCHAR(20)   NOT NULL,
+  tld             VARCHAR(20),  -- nullable: disputed/non-standard territories (e.g. Spratly Islands) have no TLD
   "nameEngl"      VARCHAR(75)  NOT NULL,
   "nameOfficial"  VARCHAR(200)  NOT NULL,
   sovereignty     VARCHAR(50)  NOT NULL,
@@ -89,10 +89,11 @@ CREATE TABLE zones (
 -- declared inline here (see dialect note B) instead of via ALTER TABLE.
 CREATE TABLE parts (
   "partID"          VARCHAR(30)   PRIMARY KEY,
-  "partLabel"       TEXT   NOT NULL,   -- CSV column is "partLabel", not "label" — see conversation
+  "label"           TEXT   NOT NULL,
   "partType"        VARCHAR(30)   NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,
   "partDesc"        VARCHAR(1000) NOT NULL,   -- free text
   "partInstr"       TEXT,             -- free text
+  "fKAliasID"       VARCHAR(30)   NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,  -- "NA" sentinel when not applicable, verified never blank across all 2345 rows
   domain            VARCHAR(30)   NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,  -- domains enum ∪ missingness
   "specimenSet"     VARCHAR(30)   NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,  -- partID reference by convention
   "compartmentSet"  VARCHAR(30)   NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,  -- partID reference by convention
@@ -142,7 +143,7 @@ CREATE TABLE parts (
   "wideNames" VARCHAR(30), "wideNamesRequired" VARCHAR(30), "wideNamesOrder" INTEGER,
 
   "refLink"   VARCHAR(255),               -- free text
-  "dataType" VARCHAR(30) NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,  -- dataTypes enum; CSV column is "dataType" (singular)
+  "dataType" VARCHAR(30) NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,  -- dataTypes enum
   "minValue"  VARCHAR(30),                 -- free text (numeric-as-string, "seeUnitVal" etc.)
   "maxValue"  VARCHAR(30),
   "minLength" INTEGER,
@@ -167,7 +168,7 @@ CREATE TABLE sets (
   status          VARCHAR(30)  NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,
   "firstReleased" VARCHAR(30)  NOT NULL,
   "lastUpdated"   VARCHAR(30)  NOT NULL,
-  changes         VARCHAR(50),
+  changes         TEXT,  -- free text; longest live value is 74 chars (parts.csv's own maxLength for "changes" was corrected 30->100 to match)
   notes           VARCHAR(1000)
 );
 
@@ -178,7 +179,7 @@ CREATE TABLE translations (
   "translationID" VARCHAR(50)  PRIMARY KEY,
   lang            VARCHAR(30)  NOT NULL REFERENCES languages(lang),
   "partID"        VARCHAR(30)  NOT NULL REFERENCES parts("partID") DEFERRABLE INITIALLY DEFERRED,
-  "partLabel"     TEXT  NOT NULL,   -- free text (translated); CSV column is "partLabel", not "label"
+  "label"         TEXT  NOT NULL,   -- free text (translated)
   "partDesc"      VARCHAR(1000) NOT NULL,  -- free text (translated)
   "partInstr"     TEXT,            -- free text (translated)
   "firstReleased" VARCHAR(30)  NOT NULL,
@@ -199,13 +200,13 @@ CREATE TABLE "wideNames" (
   "wideName"        VARCHAR(100)  PRIMARY KEY,
   label             VARCHAR(100)  NOT NULL,
   "charLength"      VARCHAR(30),
-  description       VARCHAR(1000) NOT NULL,   -- free text; CSV column is "description", not "descr"
+  descr             VARCHAR(1000) NOT NULL,   -- free text
   source            VARCHAR(30)  NOT NULL,
   "wideMeasure"      VARCHAR(60),
   "wideProtocol"     VARCHAR(30),
   "wideAttribute"    VARCHAR(30),
   "wideNameType"     VARCHAR(30),
-  "reportTableName"  VARCHAR(30),
+  "reportTableName"  VARCHAR(60),  -- widened from 30: live value "Quality reports table Shorthand" is 31 chars (parts.csv's own maxLength for "reportTableName" was corrected 30->40 to match)
   "reportTableInput" VARCHAR(30),
   "partTypeName"     VARCHAR(30),
   "partTypeInput"    VARCHAR(30),

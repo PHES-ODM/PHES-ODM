@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
-Generate seed-{postgres,sqlite,mysql}.sql from the live dictionary-tables/*.csv,
-matching schema-{postgres,sqlite,mysql}.sql's table/column definitions.
+Generate seed-{postgres,sqlite,mysql}-v<version>.sql from the live
+dictionary-tables/*.csv, matching schema-{postgres,sqlite,mysql}.sql's
+table/column definitions. <version> is read from the CSVs' own
+"Version,X.Y.Z" stamp row (see read_version()); any previously-generated
+seed file for a different version is moved to templates/archived templates/
+(see archive_superseded()) rather than left alongside the current one.
 
 Handles, empirically discovered during generation (see conversation for detail):
 - Mixed encoding in ODM_translations.csv (21 bytes are Mac OS Roman inside an
@@ -25,13 +29,41 @@ marker) -> quoted string. This distinction matters: don't conflate "field not
 populated" with "field populated with the value that means not-applicable."
 """
 import csv
+import glob
 import io
 import os
+import shutil
 
 DICT_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'dictionary-tables')
 OUT_DIR = os.path.dirname(__file__)
+ARCHIVE_DIR = os.path.join(os.path.dirname(__file__), '..', 'archived templates')
 
 BAD_SET_PARTIDS = {'gcDay100K', 'mVolt'}  # see module docstring
+
+
+def read_version(name='ODM_parts.csv'):
+    """Reads the "Version,X.Y.Z,,,..." stamp row (row 0) of an unsuffixed
+    dictionary-tables CSV -- used to name the seed output files
+    (seed-<dialect>-v<version>.sql), matching generate_workbook.py's
+    ODM_templates_V<version>.xlsx convention."""
+    path = os.path.join(DICT_DIR, name)
+    with open(path, newline='', encoding='utf-8') as f:
+        version_row = next(csv.reader(f))
+    return version_row[1]
+
+
+def archive_superseded(glob_pattern, current_path):
+    """Moves any existing seed file matching `glob_pattern` whose path isn't
+    `current_path` into templates/archived templates/ -- keeps exactly one
+    live seed file per dialect in sql-v3/, with every version the dictionary
+    has ever stamped preserved for reference in one place."""
+    for old_path in glob.glob(glob_pattern):
+        if os.path.abspath(old_path) == os.path.abspath(current_path):
+            continue
+        os.makedirs(ARCHIVE_DIR, exist_ok=True)
+        dest = os.path.join(ARCHIVE_DIR, os.path.basename(old_path))
+        shutil.move(old_path, dest)
+        print(f"archived superseded {old_path} -> {dest}")
 
 
 def read_csv(name):
@@ -121,7 +153,7 @@ def build_synthetic_pipeline_header(parts_h, parts_d):
     row = list(template)  # copy
     overrides = {
         'partID': 'pipelineHeader',
-        'partLabel': 'Pipeline Header',
+        'label': 'Pipeline Header',
         'partDesc': ('SYNTHETIC, not yet in the live dictionary. Marks the header/anchor row of a '
                      'calculations pipeline (calcType=pipelineHeader, treatmentID NULL); its own '
                      'calculationID is the pipelineID shared by every row in that pipeline. See '
@@ -161,6 +193,17 @@ def main():
     lang_h, lang_d = read_csv('ODM_languages.csv')
     country_h, country_d = read_csv('ODM_countries.csv')
     zone_h, zone_d = read_csv('ODM_zones.csv')
+
+    # Unlike parts/sets/translations — where the literal text "NULL" is a real partID
+    # (the ODM's own "Null" missingness part, e.g. genMissingnessSet's member row) and
+    # must be preserved as a quoted string — countries.csv uses literal "NULL" purely
+    # as a source-side placeholder for "this attribute doesn't apply" (e.g. Antarctica
+    # has no capital; most countries have no DST offset). Left as-is, format_value()
+    # would quote it as the 4-character string 'NULL', which both misrepresents the
+    # data and overflows isoCodeX/numCode's CHAR(3) columns (e.g. Kosovo, which has no
+    # ISO 3166-1 alpha-3/numeric code). Blank it out here so it round-trips to a real
+    # SQL NULL, matching what the source data actually means.
+    country_d = [['' if cell == 'NULL' else cell for cell in row] for row in country_d]
     parts_h, parts_d = read_csv('ODM_parts.csv')
     sets_h, sets_d = read_csv('ODM_sets.csv')
     trans_h, trans_d = read_csv('ODM_translations.csv')
@@ -203,14 +246,17 @@ def main():
     parts_d_final = parts_d + [synthetic_part]
     sets_d_final = sets_d_clean + [synthetic_membership]
 
+    version = read_version()
+
     for dialect in ('postgres', 'sqlite', 'mysql'):
-        out_path = os.path.join(OUT_DIR, f'seed-{dialect}.sql')
+        out_path = os.path.join(OUT_DIR, f'seed-{dialect}-v{version}.sql')
+        archive_superseded(os.path.join(OUT_DIR, f'seed-{dialect}-v*.sql'), out_path)
         parts_lines = []
 
         preamble = {
-            'postgres': "-- Generated seed data for PHES-ODM v3.0.1 (PostgreSQL). See generate_seed_data.py.\nBEGIN;\n",
-            'sqlite':   "-- Generated seed data for PHES-ODM v3.0.1 (SQLite). See generate_seed_data.py.\nPRAGMA foreign_keys = ON;\nBEGIN TRANSACTION;\n",
-            'mysql':    "-- Generated seed data for PHES-ODM v3.0.1 (MySQL/MariaDB). See generate_seed_data.py.\nSTART TRANSACTION;\n",
+            'postgres': f"-- Generated seed data for PHES-ODM v{version} (PostgreSQL). See generate_seed_data.py.\nBEGIN;\n",
+            'sqlite':   f"-- Generated seed data for PHES-ODM v{version} (SQLite). See generate_seed_data.py.\nPRAGMA foreign_keys = ON;\nBEGIN TRANSACTION;\n",
+            'mysql':    f"-- Generated seed data for PHES-ODM v{version} (MySQL/MariaDB). See generate_seed_data.py.\nSTART TRANSACTION;\n",
         }[dialect]
         postamble = {
             'postgres': "\nCOMMIT;\n",
