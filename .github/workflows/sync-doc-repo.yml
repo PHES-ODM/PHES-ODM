@@ -3,18 +3,33 @@ name: Sync Excel dictionary to PHES-ODM-Doc
 # Pushes the current templates/ODM_templates_V<version>.xlsx into
 # PHES-ODM/PHES-ODM-Doc's data/raw/ (as ODM_dictionary_<version>.xlsx --
 # the exact name PHES-ODM-Doc/R/get-latest-dictionary.R looks for), bumps
-# that repo's own documentation version, attempts a Quarto render using
-# that repo's own build action, and opens a PR there with the result. This
-# is the automated version of the sync-odm-doc-release skill's mechanical
-# half (see PHES-ODM-ops's
-# .claude/skills/sync-odm-doc-release/SKILL.md for the full manual process
-# this mirrors, and for review-odm-doc-content, the hand-written-prose half
-# this does NOT attempt).
+# that repo's own documentation version, renders the Quarto book using that
+# repo's own build action, and opens a PR there with the result. This is
+# the automated version of the sync-odm-doc-release skill's mechanical half
+# (see PHES-ODM-ops's .claude/skills/sync-odm-doc-release/SKILL.md for the
+# full manual process this mirrors, and for review-odm-doc-content, the
+# hand-written-prose half this does NOT attempt).
+#
+# It ALSO copies the freshly-rendered PDF straight into THIS repo's
+# doc-source/ and opens a second, companion PR here -- in the same job, not
+# as a separate reciprocal workflow. That's deliberate, not simplification
+# for its own sake: PHES-ODM-Doc's docs/ (Quarto's output-dir) is gitignored
+# there and published straight to its gh-pages branch by publish-docs.yml,
+# never committed to main -- confirmed empirically (2026-09) after a
+# same-repo predecessor design assumed docs/ landed on main and built a
+# separate push-triggered workflow around that assumption, which then could
+# never fire. Since this job already has the rendered PDF sitting in its
+# own workspace (doc-repo/docs/...), and already has PHES-ODM checked out,
+# copying it over directly is simpler and doesn't depend on a merge that
+# was never going to trigger anything.
 #
 # Needs a CROSS_REPO_TOKEN secret in THIS repo: a fine-grained PAT with
-# Contents + Pull requests write access to PHES-ODM/PHES-ODM-Doc. The
-# workflow's own GITHUB_TOKEN cannot push to a different repository at
-# all, so nothing here runs until that secret exists.
+# Contents + Pull requests write access to PHES-ODM/PHES-ODM-Doc, used only
+# for the PHES-ODM-Doc checkout/PR. The PR back into PHES-ODM itself uses
+# the workflow's own default token instead (same repo) -- which requires
+# "Allow GitHub Actions to create and approve pull requests" to be enabled
+# under this repo's Settings > Actions > General (confirmed needed
+# 2026-09, same setting regenerate-odm-template.yml's PR step needs).
 #
 # The documentation's own version (DESCRIPTION's Version:, and
 # _quarto.yml's version:/output-file:) is auto-bumped by one PATCH version
@@ -27,15 +42,15 @@ name: Sync Excel dictionary to PHES-ODM-Doc
 # change actually warrants a bigger jump than this workflow's always-safe
 # smallest step.
 #
-# Rendering the Quarto book (via PHES-ODM-Doc's own
-# ./.github/actions/build-docs-composite-action, so this stays in step
-# with however that repo builds its own docs) can genuinely fail here -- a
-# new partType or required column the display templates don't handle yet
-# needs a human to patch R code, not something this workflow should ever
-# attempt on its own (see sync-odm-doc-release's anti-patterns). So the PR
-# is opened regardless of the render outcome, with the render log (or
+# Rendering the Quarto book can genuinely fail here -- a new partType or
+# required column the display templates don't handle yet needs a human to
+# patch R code, not something this workflow should ever attempt on its own
+# (see sync-odm-doc-release's anti-patterns). So the PHES-ODM-Doc PR is
+# opened regardless of the render outcome, with the render log (or
 # failure) in the PR body -- never silently, and never blocking the file
-# swap from at least landing for review.
+# swap from at least landing for review. The companion PHES-ODM PR (the
+# PDF) only happens when the render actually succeeded and produced one --
+# there's nothing meaningful to copy otherwise.
 
 on:
   push:
@@ -45,7 +60,8 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   sync:
@@ -146,24 +162,6 @@ jobs:
             echo "RENDER_EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Determine whether docs/ has anything to stage
-        # A failed (or even successful, if quarto does a clean rebuild)
-        # render can leave doc-repo/docs empty or entirely removed --
-        # `git add`-ing a pathspec that matches nothing hard-fails the
-        # PR-creation step below and would silently defeat the whole point
-        # of continue-on-error on the render step (still open the PR with
-        # whatever DID succeed). Only include docs/** in add-paths when
-        # there's actually something there to add.
-        if: steps.check.outputs.needed == 'true'
-        id: docspath
-        run: |
-          if [ -d doc-repo/docs ] && [ -n "$(find doc-repo/docs -mindepth 1 -print -quit)" ]; then
-            echo "pattern=docs/**" >> "$GITHUB_OUTPUT"
-          else
-            echo "pattern=" >> "$GITHUB_OUTPUT"
-            echo "::warning::doc-repo/docs is missing or empty after the render step -- the rendered docs won't be included in this PR."
-          fi
-
       - name: Open PR in PHES-ODM-Doc
         if: steps.check.outputs.needed == 'true'
         uses: peter-evans/create-pull-request@v6
@@ -182,7 +180,7 @@ jobs:
 
             ${{ steps.summary.outputs.body }}
 
-            Once this is merged, `sync-doc-pdf-back.yml` in this repo will push the rendered `docs/ODM-documentation-v${{ steps.docver.outputs.new_version }}.pdf` back to PHES-ODM/PHES-ODM as its own PR.
+            `docs/` (the rendered site) isn't part of this PR -- it's gitignored in this repo and published to `gh-pages` separately by `publish-docs.yml`. If the render above succeeded, the rendered PDF has already been opened as its own companion PR against `PHES-ODM/PHES-ODM`'s `doc-source/`, from this same workflow run.
 
             Consider chaining into `review-odm-doc-content` (PHES-ODM-ops skill) to audit the hand-written chapters against what changed between the two dictionary versions -- this PR only handles the auto-generated reference chapters.
           branch: auto/sync-dictionary-snapshot
@@ -191,4 +189,34 @@ jobs:
             data/raw/ODM_dictionary_*.xlsx
             DESCRIPTION
             qmd/_quarto.yml
-            ${{ steps.docspath.outputs.pattern }}
+
+      - name: Copy rendered PDF into PHES-ODM
+        if: steps.check.outputs.needed == 'true' && steps.render.outcome == 'success'
+        id: copypdf
+        run: |
+          set -euo pipefail
+          PDF="doc-repo/docs/ODM-documentation-v${{ steps.docver.outputs.new_version }}.pdf"
+          if [ ! -f "$PDF" ]; then
+            echo "::warning::expected rendered PDF not found at $PDF -- skipping the PHES-ODM companion PR."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          rm -f doc-source/ODM-documentation-v*.pdf
+          cp "$PDF" "doc-source/ODM-documentation-v${{ steps.docver.outputs.new_version }}.pdf"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open companion PR in PHES-ODM
+        if: steps.check.outputs.needed == 'true' && steps.copypdf.outputs.found == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Sync rendered documentation PDF to v${{ steps.docver.outputs.new_version }}"
+          title: "Sync rendered documentation PDF to v${{ steps.docver.outputs.new_version }}"
+          body: |
+            Auto-generated by this repo's own `sync-doc-repo.yml`, from the
+            same run that just synced `templates/ODM_templates_V${{ steps.version.outputs.version }}.xlsx`
+            to `PHES-ODM/PHES-ODM-Doc` and rendered its Quarto book there.
+
+            Swapped in `doc-source/ODM-documentation-v${{ steps.docver.outputs.new_version }}.pdf`, removing the old versioned PDF.
+          branch: auto/sync-documentation-pdf
+          delete-branch: true
+          add-paths: doc-source/ODM-documentation-v*.pdf
