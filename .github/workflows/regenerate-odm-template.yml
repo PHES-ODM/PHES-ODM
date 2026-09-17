@@ -93,8 +93,18 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ steps.version.outputs.version }}"
+          # Scoped to the CURRENT major version (e.g. v3.*), not a bare v*
+          # glob: database-schemas/ also holds one-off archival schemas for
+          # retired major versions (e.g. schema-sqlite-v2.3.0.sql alongside
+          # this major version's schema-sqlite-v3.0.1.sql) -- a bare glob
+          # would alphabetically sort v2.3.0 before v3.0.1 and smoke-test
+          # this version's seed data against the WRONG major version's
+          # schema, or (in the rename step below) see two matches and skip
+          # renaming entirely. Confirmed necessary 2026-09 when the v2.3.0
+          # archival schema was added.
+          MAJOR="${VERSION%%.*}"
           SEED_FILE="templates/sql-v3/seed-sqlite-v${VERSION}.sql"
-          SCHEMA_FILE=$(ls database-schemas/schema-sqlite-v*.sql | head -1)
+          SCHEMA_FILE=$(ls database-schemas/schema-sqlite-v${MAJOR}.*.sql | head -1)
           rm -f /tmp/odm_smoke.db
           sqlite3 /tmp/odm_smoke.db < "$SCHEMA_FILE"
           sqlite3 /tmp/odm_smoke.db < "$SEED_FILE"
@@ -113,14 +123,18 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ steps.version.outputs.version }}"
+          MAJOR="${VERSION%%.*}"
           for dialect in postgres sqlite mysql; do
-            matches=(database-schemas/schema-${dialect}-v*.sql)
+            # Scoped to the current major version -- see the smoke-test step
+            # above for why a bare v* glob is wrong once an archival major
+            # version's schema exists alongside this one.
+            matches=(database-schemas/schema-${dialect}-v${MAJOR}.*.sql)
             if [ ! -e "${matches[0]}" ]; then
-              echo "::warning::no database-schemas/schema-${dialect}-v*.sql found, skipping"
+              echo "::warning::no database-schemas/schema-${dialect}-v${MAJOR}.*.sql found, skipping"
               continue
             fi
             if [ "${#matches[@]}" -gt 1 ]; then
-              echo "::warning::multiple database-schemas/schema-${dialect}-v*.sql files found (${matches[*]}) -- leaving alone, resolve by hand"
+              echo "::warning::multiple database-schemas/schema-${dialect}-v${MAJOR}.*.sql files found (${matches[*]}) -- leaving alone, resolve by hand"
               continue
             fi
             target="database-schemas/schema-${dialect}-v${VERSION}.sql"

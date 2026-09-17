@@ -1,4 +1,4 @@
-﻿Version,2.3.0,,,,,,,,,
+Version,2.3.0,,,,,,,,,
 setCompID,setID,setType,partID,label,enumeration,status,firstReleased,lastUpdated,changes,notes
 absHumidUnitSet_gm3,absHumidUnitSet,unitSets,gm3,Gram per cubic metre,1,active,2.0.0,2.0.0,,
 airCompartmentSet_air,airCompartmentSet,compartmentSets,air,Air compartment,1,active,2.0.0,2.0.0,,
@@ -795,3 +795,34 @@ setTypeSet_unitSets,setTypeSet,mmaSets,unitSets,Unit sets,6,active,3.0.1,3.0.1,,
 setTypeSet_shortSets,setTypeSet,mmaSets,shortSets,Shorthand or Short Name Set Type,7,active,3.0.1,3.0.1,,
 setTypeSet_missingnessSets,setTypeSet,mmaSets,missingnessSets,Missingness sets,8,active,3.0.1,3.0.1,,
 setTypeSet_dictSets,setTypeSet,mmaSets,dictSets,Dictionary set type,9,active,3.0.1,3.0.1,,
+collectSet_autoComp,collectSet,mmaSets,autoComp,Automatic composite sampling,18,active,2.3.0,2.3.0,NA,NA
+collectSet_autoSeq,collectSet,mmaSets,autoSeq,Automatic sequential sampling,19,active,2.3.0,2.3.0,NA,NA
+collectSet_cone,collectSet,mmaSets,cone,Cone-shaped sampling,14,active,2.3.0,2.3.0,NA,NA
+collectSet_core,collectSet,mmaSets,core,Core sampling ,12,active,2.3.0,2.3.0,NA,NA
+collectSet_horGrb,collectSet,mmaSets,horGrb,Horizontal grab sampling,15,active,2.3.0,2.3.0,NA,NA
+collectSet_trap,collectSet,mmaSets,trap,Passive (trap) sampling,17,active,2.3.0,2.3.0,NA,NA
+collectSet_vac,collectSet,mmaSets,vac,Vacuum sludge sampling,13,active,2.3.0,2.3.0,NA,NA
+collectSet_vertGrb,collectSet,mmaSets,vertGrb,Vertical grab sampling,16,active,2.3.0,2.3.0,NA,NA
+sampleMatSet_effluNS,sampleMatSet,mmaSets,effluNS,Wastewater Effluent - non-specified,19,active,2.3.0,2.3.0,NA,NA
+sampleMatSet_sludgeNS,sampleMatSet,mmaSets,sludgeNS,Wastewater Sludge - non-specified,18,active,2.3.0,2.3.0,NA,NA
+shedSet_tHub,shedSet,mmaSets,tHub,Transport hub - General,24,active,2.3.0,2.3.0,NA,NA
+shedSet_transp,shedSet,mmaSets,transp,Transportation vehicle - general,30,active,2.3.0,2.3.0,NA,NA
+shedSet_bus,shedSet,mmaSets,bus,Bus,33,active,3.0.0,3.0.0,NA,NA
+shedSet_busStat,shedSet,mmaSets,busStat,Bus Station,34,active,3.0.0,3.0.0,NA,NA
+shedSet_landTH,shedSet,mmaSets,landTH,Land-based Transit Hub,36,active,3.0.0,3.0.0,NA,NA
+shedSet_port,shedSet,mmaSets,port,Port or Harbour,35,active,3.0.0,3.0.0,NA,NA
+shedSet_train,shedSet,mmaSets,train,Train,31,active,3.0.0,3.0.0,NA,NA
+shedSet_trStat,shedSet,mmaSets,trStat,Train Station,32,active,3.0.0,3.0.0,NA,NA
+shedSet_waterTH,shedSet,mmaSets,waterTH,Water-based Transit Hub,37,active,3.0.0,3.0.0,NA,NA
+linearAggrSet_cuCo,linearAggrSet,aggregationSets,cuCo,Cumulative count,14,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_daiCo,linearAggrSet,aggregationSets,daiCo,Daily count,15,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_sum14,linearAggrSet,aggregationSets,sum14,Rolling sum of previous 14 days,16,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_total,linearAggrSet,aggregationSets,total,Total amount or count - the sum,17,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_stEr,linearAggrSet,aggregationSets,stEr,Standard Error,18,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_hAg,otherAggrSet,aggregationSets,hAg,See Header for Aggregation,17,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_stEr,otherAggrSet,aggregationSets,stEr,Standard Error,18,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_cuCo,otherAggrSet,aggregationSets,cuCo,Cumulative count,19,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_daiCo,otherAggrSet,aggregationSets,daiCo,Daily count,20,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_sum14,otherAggrSet,aggregationSets,sum14,Rolling sum of previous 14 days,21,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_total,otherAggrSet,aggregationSets,total,Total amount or count - the sum,22,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+logAggrSet_stEr,logAggrSet,aggregationSets,stEr,Standard Error,11,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
