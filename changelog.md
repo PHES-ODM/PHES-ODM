@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-09-17 (update this date when merging to main)
+## 2026-09-17
 
 **v3.0.1**
 
