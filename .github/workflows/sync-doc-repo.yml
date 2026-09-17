@@ -56,7 +56,13 @@ on:
     branches: [main]
     paths:
       - "templates/ODM_templates_V*.xlsx"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Re-render and re-sync even though the xlsx dictionary snapshot in PHES-ODM-Doc already matches this version. Use this after fixing something in PHES-ODM-Doc''s own rendering code (an R/qmd bug, say) that a same-version xlsx would otherwise mask -- the "needed" check below only compares the xlsx filename, so it has no way to know the render output itself is stale for a reason that has nothing to do with the dictionary version.'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -85,13 +91,20 @@ jobs:
 
       - name: Check whether a sync is needed
         id: check
+        env:
+          FORCE: ${{ inputs.force }}
         run: |
           set -euo pipefail
+          if [ "${FORCE}" = "true" ]; then
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+            echo "force=true: re-syncing and re-rendering regardless of whether the xlsx snapshot already matches."
+            exit 0
+          fi
           CURRENT=$(ls doc-repo/data/raw/ODM_dictionary_*.xlsx 2>/dev/null | head -1 || true)
           TARGET="doc-repo/data/raw/ODM_dictionary_${{ steps.version.outputs.version }}.xlsx"
           if [ "$CURRENT" = "$TARGET" ]; then
             echo "needed=false" >> "$GITHUB_OUTPUT"
-            echo "PHES-ODM-Doc already has ODM_dictionary_${{ steps.version.outputs.version }}.xlsx -- nothing to sync."
+            echo "PHES-ODM-Doc already has ODM_dictionary_${{ steps.version.outputs.version }}.xlsx -- nothing to sync. If you need to re-render anyway (e.g. after fixing something in PHES-ODM-Doc's own rendering code), re-run this workflow with 'force' checked."
           else
             echo "needed=true" >> "$GITHUB_OUTPUT"
           fi
