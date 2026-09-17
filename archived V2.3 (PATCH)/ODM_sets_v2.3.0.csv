@@ -1,4 +1,4 @@
-﻿setCompID,setID,setType,partID,label,enumeration,status,firstReleased,lastUpdated,changes,notes
+setCompID,setID,setType,partID,label,enumeration,status,firstReleased,lastUpdated,changes,notes
 absHumidUnitSet_gm3,absHumidUnitSet,unitSets,gm3,Gram per cubic metre,1,active,2.0.0,2.0.0,,
 airCompartmentSet_air,airCompartmentSet,compartmentSets,air,Air compartment,1,active,2.0.0,2.0.0,,
 airportSheetSet_airportLists,airportSheetSet,dictSets,airportLists,Airport lists worksheet,1,active,2.0.0,2.0.0,,
@@ -813,3 +813,15 @@ shedSet_port,shedSet,mmaSets,port,Port or Harbour,35,active,3.0.0,3.0.0,NA,NA
 shedSet_train,shedSet,mmaSets,train,Train,31,active,3.0.0,3.0.0,NA,NA
 shedSet_trStat,shedSet,mmaSets,trStat,Train Station,32,active,3.0.0,3.0.0,NA,NA
 shedSet_waterTH,shedSet,mmaSets,waterTH,Water-based Transit Hub,37,active,3.0.0,3.0.0,NA,NA
+linearAggrSet_cuCo,linearAggrSet,aggregationSets,cuCo,Cumulative count,14,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_daiCo,linearAggrSet,aggregationSets,daiCo,Daily count,15,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_sum14,linearAggrSet,aggregationSets,sum14,Rolling sum of previous 14 days,16,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_total,linearAggrSet,aggregationSets,total,Total amount or count - the sum,17,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+linearAggrSet_stEr,linearAggrSet,aggregationSets,stEr,Standard Error,18,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_hAg,otherAggrSet,aggregationSets,hAg,See Header for Aggregation,17,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_stEr,otherAggrSet,aggregationSets,stEr,Standard Error,18,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_cuCo,otherAggrSet,aggregationSets,cuCo,Cumulative count,19,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_daiCo,otherAggrSet,aggregationSets,daiCo,Daily count,20,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_sum14,otherAggrSet,aggregationSets,sum14,Rolling sum of previous 14 days,21,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+otherAggrSet_total,otherAggrSet,aggregationSets,total,Total amount or count - the sum,22,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
+logAggrSet_stEr,logAggrSet,aggregationSets,stEr,Standard Error,11,active,2.3.0,2.3.0,Backported from v3.0.0 (VOCAB.03: missing aggregationSets membership),
