@@ -146,6 +146,24 @@ jobs:
             echo "RENDER_EOF"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Determine whether docs/ has anything to stage
+        # A failed (or even successful, if quarto does a clean rebuild)
+        # render can leave doc-repo/docs empty or entirely removed --
+        # `git add`-ing a pathspec that matches nothing hard-fails the
+        # PR-creation step below and would silently defeat the whole point
+        # of continue-on-error on the render step (still open the PR with
+        # whatever DID succeed). Only include docs/** in add-paths when
+        # there's actually something there to add.
+        if: steps.check.outputs.needed == 'true'
+        id: docspath
+        run: |
+          if [ -d doc-repo/docs ] && [ -n "$(find doc-repo/docs -mindepth 1 -print -quit)" ]; then
+            echo "pattern=docs/**" >> "$GITHUB_OUTPUT"
+          else
+            echo "pattern=" >> "$GITHUB_OUTPUT"
+            echo "::warning::doc-repo/docs is missing or empty after the render step -- the rendered docs won't be included in this PR."
+          fi
+
       - name: Open PR in PHES-ODM-Doc
         if: steps.check.outputs.needed == 'true'
         uses: peter-evans/create-pull-request@v6
@@ -173,4 +191,4 @@ jobs:
             data/raw/ODM_dictionary_*.xlsx
             DESCRIPTION
             qmd/_quarto.yml
-            docs/**
+            ${{ steps.docspath.outputs.pattern }}
