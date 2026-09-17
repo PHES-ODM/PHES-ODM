@@ -1,0 +1,174 @@
+name: Regenerate ODM Excel & SQL templates
+
+# Regenerates templates/ODM_templates_V<version>.xlsx and
+# templates/sql-v3/seed-{postgres,sqlite,mysql}-v<version>.sql from
+# dictionary-tables/*.csv (the source of truth) whenever those CSVs change on
+# main, and opens a PR with the result rather than committing directly --
+# matches this org's "AI drafts, human approves" convention (every related
+# skill in PHES-ODM-ops opens a PR the same way).
+#
+# <version> is read from the CSVs' own "Version,X.Y.Z" stamp row. Both
+# generator scripts self-archive: if a previously-generated file for a
+# different version is still sitting in its live location, it's moved into
+# "templates/archived templates/" before the new one is written, so only the
+# current version's copy stays live and every past version stays reachable
+# in one place.
+#
+# Only the unversioned dictionary-tables/ODM_*.csv files trigger this --
+# ODM_*_v<version>.csv siblings are excluded on purpose. Both generator
+# scripts read the unversioned files exclusively, and sync-dictionary-
+# versions.yml is what keeps a versioned-sibling edit propagated into its
+# unversioned counterpart. Without this exclusion, editing only the
+# versioned sibling would fire this workflow immediately against
+# still-stale unversioned content, before that sync commit ever lands.
+#
+# database-schemas/schema-{postgres,sqlite,mysql}-v<version>.sql's CONTENT is
+# intentionally NOT touched here -- unlike the seed data, the schema is
+# hand-maintained (column types/lengths/nullability reconciled against
+# empirical data, not mechanically derived from the CSVs) and changing it
+# requires the judgment process documented in the sync-odm-sql-templates
+# skill, not an unattended CI regeneration. A CSV change that only
+# adds/edits rows (the common case) needs no schema change at all; one that
+# renames or restructures a column needs a human (with or without Claude's
+# help) to run that skill and open its own PR.
+#
+# Its FILENAME is bumped to the current version automatically, but only
+# after the SQLite smoke test below has actually proven that version's seed
+# data still loads clean against the existing schema content -- a passing
+# smoke test is the evidence that the schema is still compatible, which is
+# what licenses relabelling it rather than leaving it under a stale version
+# number. If the smoke test fails (a real structural mismatch), the schema
+# filename is deliberately left alone at its last-confirmed version.
+#
+# The workbook and seed data are both generated artifacts that still want a
+# human glance before merging -- the workbook because of its dropdown/lookup
+# formulas, the seed data because the automated SQLite smoke test below only
+# proves "loads clean, zero FK orphans", not "every value is semantically
+# right". Neither is safe to auto-merge on CI's say-so alone.
+#
+# Re-running this manually (workflow_dispatch) re-uses the same long-lived PR
+# branch (peter-evans/create-pull-request pushes new commits to an existing PR
+# for the same head branch instead of opening a duplicate), so repeated CSV
+# edits update one PR rather than spawning a new one each time.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dictionary-tables/ODM_*.csv"
+      - "!dictionary-tables/ODM_*_v*.csv"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install workbook dependencies
+        run: pip install -r templates/workbook-v3/requirements.txt
+
+      - name: Generate Excel workbook
+        run: python templates/workbook-v3/generate_workbook.py
+
+      - name: Generate SQL seed data
+        run: python templates/sql-v3/generate_seed_data.py
+
+      - name: Determine current dictionary version
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION=$(python3 -c "import csv; print(next(csv.reader(open('dictionary-tables/ODM_parts.csv')))[1])")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke-test seed data against SQLite
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          SEED_FILE="templates/sql-v3/seed-sqlite-v${VERSION}.sql"
+          SCHEMA_FILE=$(ls database-schemas/schema-sqlite-v*.sql | head -1)
+          rm -f /tmp/odm_smoke.db
+          sqlite3 /tmp/odm_smoke.db < "$SCHEMA_FILE"
+          sqlite3 /tmp/odm_smoke.db < "$SEED_FILE"
+          ORPHANS=$(sqlite3 /tmp/odm_smoke.db "PRAGMA foreign_keys=ON; PRAGMA foreign_key_check;")
+          if [ -n "$ORPHANS" ]; then
+            echo "FK orphans found after loading $SEED_FILE against $SCHEMA_FILE:"
+            echo "$ORPHANS"
+            exit 1
+          fi
+          echo "OK: $SCHEMA_FILE + $SEED_FILE load clean with zero FK orphans."
+
+      - name: Bump schema filenames to the current version
+        # Only reached if the smoke test above passed -- see the header
+        # comment for why that's the gate. Renames content unchanged; a real
+        # structural change still requires the sync-odm-sql-templates skill.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          for dialect in postgres sqlite mysql; do
+            matches=(database-schemas/schema-${dialect}-v*.sql)
+            if [ ! -e "${matches[0]}" ]; then
+              echo "::warning::no database-schemas/schema-${dialect}-v*.sql found, skipping"
+              continue
+            fi
+            if [ "${#matches[@]}" -gt 1 ]; then
+              echo "::warning::multiple database-schemas/schema-${dialect}-v*.sql files found (${matches[*]}) -- leaving alone, resolve by hand"
+              continue
+            fi
+            target="database-schemas/schema-${dialect}-v${VERSION}.sql"
+            if [ "${matches[0]}" != "$target" ]; then
+              git mv "${matches[0]}" "$target"
+              echo "renamed ${matches[0]} -> $target"
+            fi
+          done
+
+      - name: Open PR with regenerated templates
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Regenerate ODM Excel & SQL templates from dictionary-tables"
+          title: "Regenerate ODM Excel & SQL templates"
+          body: |
+            Auto-generated after a change to `dictionary-tables/*.csv` on
+            `main`:
+            - `templates/workbook-v3/generate_workbook.py` regenerated the
+              Excel workbook.
+            - `templates/sql-v3/generate_seed_data.py` regenerated the SQL
+              seed data for all three dialects.
+            - Any superseded version of either was moved to
+              `templates/archived templates/` automatically.
+            - `database-schemas/schema-{postgres,sqlite,mysql}-v*.sql` were
+              renamed to `v${{ steps.version.outputs.version }}` (content
+              unchanged) since the smoke test below just confirmed they're
+              still compatible with this version's dictionary.
+
+            The seed data passed an automated smoke test (loads cleanly
+            against the SQLite schema, zero FK orphans) -- that only rules
+            out the most common mechanical failures, not semantic
+            correctness. Please also open the workbook in Excel and
+            spot-check a few sheets (header row order, a couple of dropdown
+            columns, the Part IDs mirror table) before merging -- these are
+            generated artifacts, not something to merge on the diff alone.
+
+            `database-schemas/schema-{postgres,sqlite,mysql}-v*.sql`'s
+            CONTENT is untouched by this PR -- only its filename moved. If
+            the CSV change that triggered this also needs a real schema
+            change (a renamed/added/removed column, a new nullability or
+            length violation), that still goes through the
+            `sync-odm-sql-templates` skill's full empirical-validation
+            process separately -- and if it does, this PR's smoke test
+            would have failed rather than reaching this point.
+          branch: auto/regenerate-odm-template
+          delete-branch: true
+          add-paths: |
+            templates/ODM_templates_V*.xlsx
+            templates/sql-v3/seed-*.sql
+            templates/archived templates/*
+            database-schemas/schema-*.sql

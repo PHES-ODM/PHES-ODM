@@ -1,4 +1,3 @@
-Version,3.0.1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 wideName,label,charLength,descr,source,wideMeasure,wideProtocol,wideAttribute,wideNameType,reportTableName,reportTableInput,partTypeName,partTypeInput,compartmentName,compartmentInput,specimenName,specimenInput,fractionName,fractionInput,measureName,measureInput,methodName,methodInput,unitName,unitInput,aggregationName,aggregationInput,index,attributeName,attributeInput,tag
 sas_sampleID,SampleID -Wide,12,"A field for recording the unique identifier for a sample in a wide, or combined long and wide table.",EU Airport template,NA,NA,sas_sampleID,attributes,Sample report table Shorthand,sas,,,,,,,,,,,,,,,,,,Sample ID,sampleID,
 si_parSiteID,Airport IATA code,12,"Airport IATA code for sampling, used as a parent site ID for organizing sub-sites in the airport.",EU Airport template,NA,NA,si_parSiteID,attributes,Sites table Shorthand,si,,,,,,,,,,,,,,,,,,Parent Site ID,parSiteID,

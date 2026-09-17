@@ -1,0 +1,176 @@
+name: Sync Excel dictionary to PHES-ODM-Doc
+
+# Pushes the current templates/ODM_templates_V<version>.xlsx into
+# PHES-ODM/PHES-ODM-Doc's data/raw/ (as ODM_dictionary_<version>.xlsx --
+# the exact name PHES-ODM-Doc/R/get-latest-dictionary.R looks for), bumps
+# that repo's own documentation version, attempts a Quarto render using
+# that repo's own build action, and opens a PR there with the result. This
+# is the automated version of the sync-odm-doc-release skill's mechanical
+# half (see PHES-ODM-ops's
+# .claude/skills/sync-odm-doc-release/SKILL.md for the full manual process
+# this mirrors, and for review-odm-doc-content, the hand-written-prose half
+# this does NOT attempt).
+#
+# Needs a CROSS_REPO_TOKEN secret in THIS repo: a fine-grained PAT with
+# Contents + Pull requests write access to PHES-ODM/PHES-ODM-Doc. The
+# workflow's own GITHUB_TOKEN cannot push to a different repository at
+# all, so nothing here runs until that secret exists.
+#
+# The documentation's own version (DESCRIPTION's Version:, and
+# _quarto.yml's version:/output-file:) is auto-bumped by one PATCH version
+# by .github/scripts/bump_doc_version.py -- these two fields are known to
+# drift from each other in practice (DESCRIPTION at 2.1.0 while
+# _quarto.yml was still at 2.0.1, observed 2026-09), so that script reads
+# both, bumps from whichever is higher, and writes the same new value to
+# both, fixing that drift as a side effect. A human should bump this
+# further (a minor/major version) by hand afterward if the dictionary
+# change actually warrants a bigger jump than this workflow's always-safe
+# smallest step.
+#
+# Rendering the Quarto book (via PHES-ODM-Doc's own
+# ./.github/actions/build-docs-composite-action, so this stays in step
+# with however that repo builds its own docs) can genuinely fail here -- a
+# new partType or required column the display templates don't handle yet
+# needs a human to patch R code, not something this workflow should ever
+# attempt on its own (see sync-odm-doc-release's anti-patterns). So the PR
+# is opened regardless of the render outcome, with the render log (or
+# failure) in the PR body -- never silently, and never blocking the file
+# swap from at least landing for review.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "templates/ODM_templates_V*.xlsx"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PHES-ODM
+        uses: actions/checkout@v4
+
+      - name: Determine current dictionary version
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION=$(python3 -c "import csv; print(next(csv.reader(open('dictionary-tables/ODM_parts.csv')))[1])")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout PHES-ODM-Doc
+        uses: actions/checkout@v4
+        with:
+          repository: PHES-ODM/PHES-ODM-Doc
+          token: ${{ secrets.CROSS_REPO_TOKEN }}
+          path: doc-repo
+
+      - name: Check whether a sync is needed
+        id: check
+        run: |
+          set -euo pipefail
+          CURRENT=$(ls doc-repo/data/raw/ODM_dictionary_*.xlsx 2>/dev/null | head -1 || true)
+          TARGET="doc-repo/data/raw/ODM_dictionary_${{ steps.version.outputs.version }}.xlsx"
+          if [ "$CURRENT" = "$TARGET" ]; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            echo "PHES-ODM-Doc already has ODM_dictionary_${{ steps.version.outputs.version }}.xlsx -- nothing to sync."
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Swap in the new dictionary snapshot
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          set -euo pipefail
+          rm -f doc-repo/data/raw/ODM_dictionary_*.xlsx
+          cp "templates/ODM_templates_V${{ steps.version.outputs.version }}.xlsx" \
+             "doc-repo/data/raw/ODM_dictionary_${{ steps.version.outputs.version }}.xlsx"
+
+      - name: Bump the documentation version
+        if: steps.check.outputs.needed == 'true'
+        id: docver
+        run: python3 .github/scripts/bump_doc_version.py doc-repo
+
+      - name: Install quarto
+        if: steps.check.outputs.needed == 'true'
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Install tinytex
+        if: steps.check.outputs.needed == 'true'
+        run: quarto install tool tinytex
+
+      - name: Set up R
+        if: steps.check.outputs.needed == 'true'
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "4.0.3"
+
+      - name: Install R dependencies
+        if: steps.check.outputs.needed == 'true'
+        uses: r-lib/actions/setup-renv@v2
+        with:
+          working-directory: doc-repo
+
+      - name: Render quarto
+        if: steps.check.outputs.needed == 'true'
+        id: render
+        working-directory: doc-repo
+        # Never fails the job -- a render failure still needs the file swap
+        # and version bump to reach review, with the failure itself as the
+        # most important thing in the PR body. continue-on-error lets later
+        # steps run normally instead of needing if: always() everywhere.
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          quarto render ./qmd 2>&1 | tee /tmp/quarto-render.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Summarize render outcome
+        if: steps.check.outputs.needed == 'true'
+        id: summary
+        run: |
+          {
+            echo "body<<RENDER_EOF"
+            if [ "${{ steps.render.outcome }}" = "success" ]; then
+              echo "Quarto render: **succeeded**."
+            else
+              echo "Quarto render: **FAILED** -- this PR still swaps in the new dictionary snapshot and bumps the version, but the rendered docs/ output may be stale or missing. A human needs to look at the log below before merging."
+            fi
+            echo ""
+            echo '```'
+            tail -c 4000 /tmp/quarto-render.log 2>/dev/null || echo "(no render log captured)"
+            echo '```'
+            echo "RENDER_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open PR in PHES-ODM-Doc
+        if: steps.check.outputs.needed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.CROSS_REPO_TOKEN }}
+          path: doc-repo
+          commit-message: "Sync dictionary snapshot to v${{ steps.version.outputs.version }}, bump docs to v${{ steps.docver.outputs.new_version }}"
+          title: "Sync dictionary snapshot to v${{ steps.version.outputs.version }}"
+          body: |
+            Auto-generated by PHES-ODM/PHES-ODM's `sync-doc-repo.yml` after
+            `templates/ODM_templates_V${{ steps.version.outputs.version }}.xlsx`
+            changed on `main` there.
+
+            - Swapped in `data/raw/ODM_dictionary_${{ steps.version.outputs.version }}.xlsx`, removing the old versioned snapshot.
+            - Bumped the documentation version from `${{ steps.docver.outputs.old_version }}` to `${{ steps.docver.outputs.new_version }}` in `DESCRIPTION` and `qmd/_quarto.yml` (a patch bump -- bump further by hand if this dictionary change warrants a bigger jump).
+
+            ${{ steps.summary.outputs.body }}
+
+            Once this is merged, `sync-doc-pdf-back.yml` in this repo will push the rendered `docs/ODM-documentation-v${{ steps.docver.outputs.new_version }}.pdf` back to PHES-ODM/PHES-ODM as its own PR.
+
+            Consider chaining into `review-odm-doc-content` (PHES-ODM-ops skill) to audit the hand-written chapters against what changed between the two dictionary versions -- this PR only handles the auto-generated reference chapters.
+          branch: auto/sync-dictionary-snapshot
+          delete-branch: true
+          add-paths: |
+            data/raw/ODM_dictionary_*.xlsx
+            DESCRIPTION
+            qmd/_quarto.yml
+            docs/**
