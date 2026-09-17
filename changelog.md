@@ -1,6 +1,159 @@
 # Changelog
 
-## 2026-08-24 (update this date when merging to main)
+## 2026-09-17 (update this date when merging to main)
+
+**v3.0.1**
+
+Patch release adding a broad genomics/public-health-surveillance vocabulary expansion (69 new virus/pathogen measurements across 22 new grouping categories, largely hantaviruses, orthoebolaviruses, Aichi/Saffold/cosaviruses, and human polyomaviruses/parvoviruses/herpesviruses), a `parts.csv`/`sets.csv`-wide data-type and mandatoryIf-conditional correction pass, and the schema groundwork (`accessions`/`calculations`/`phActions`/`polygonRelationships` table registrations, `fKAliasID`) for the wider v3-line feature set `v2.3.0` deliberately excludes. Diffed against `v3.0.0` (the previous tagged v3 release) via the real checked-out `dictionary-tables/*.csv` content, not the `firstReleased`/`lastUpdated`/`changes` metadata columns alone.
+
+- **Schema changes**
+  - `ODM_parts.csv`: `partLabel` column renamed to `label`
+  - `ODM_parts.csv`: new `fKAliasID` column added — records the primary key referenced under a different name as a foreign key in another table (e.g. `sampleIDObj` in `sampleRelationships` takes the value of a `sampleID`)
+  - `ODM_wideNames.csv`: `description` column renamed to `descr`; `FractionInput`/`Tag` columns renamed to `fractionInput`/`tag` (casing fixes, consistent with every other single-word column in this table)
+  - `ODM_sets.csv`: registered the `accessions`/`calculations`/`phActions`/`polygonRelationships` tables into the dictionary's own meta-sets (`listSet`, `setTypeSet`, `templateSheetSet`, `erdTableSet`, `fullDictionarySheetSet`) — the schema-level groundwork for these four tables, whose own column definitions and vocabulary are not otherwise populated in this release
+
+- **Variable changes (partID renames, confirmed via exact-label match)**
+  - `aggragationScale` → `aggregationScale` — typo fix
+  - `null` → `NULL` — capitalization consistency fix, to match general coding-language convention
+  - `gcDay100K` → `gcDay100k`, `mVolt` → `mvolt` — casing fixes in `ODM_sets.csv`'s `alleleUnitSet`/`geneticUnitSet`/`electricPotentSet` memberships, correcting a mismatch against these partIDs' own real casing in `ODM_parts.csv` (both already existed, lowercase, as real parts — these `ODM_sets.csv` FK rows were simply mis-cased, and had been silently excluded as orphaned rows in the generated SQL seed data until this fix)
+
+- **Deprecations** (previously `active` → `depreciated`, all stale duplicates)
+  - `promegaLVTNA` — depreciated, duplicate of `promWW`
+  - `qiAllprep` — depreciated, duplicate of `qgDNARNA`
+  - `zymoWatRNA` — depreciated, duplicate of `zymoEnv`
+  - Each duplicate's `ODM_sets.csv` membership row (`methodConcSet`/`extractSet`) was removed and replaced by the canonical partID's own membership
+
+- **Data type corrections** (65 `dataType` field fixes across existing parts, found via the `internal_structure_rules/DICTIONARY_VALIDATION.md` DT.* rule checks)
+  - `andBoo`, `waterCompartmentSet`, `uSiteMeasureID`: `dataType=seeUnitData` incorrectly set on non-`measurements` rows (only `measurements` rows may defer their data type this way) → `varchar`
+  - 34 fields with `dataType=NA` (undeclared) → `varchar` — includes `epiDate`, `onsDate`, `tesDate`, `caRepDate`, and 30 similarly-shaped date/free-text attributes that had never had a real data type recorded
+  - 25 `*Input`/`*Name`/`*Set` wideNames-dropdown-mirror and set-typed attributes (`compartmentInput`, `measureName`, `unitSet`, `specimenSet`, `qualityIndSet`, `relationshipID`, `status`, etc.) reclassified `varchar` → `categorical`, matching how these columns are actually populated (a closed set of permissible values, not free text)
+  - 8 fields overcorrected the other way, `categorical` → `varchar`: the `iso6391`/`iso6392B`/`iso6392T`/`iso6393`/`iso6396` language-code columns, `natName`, `outb`, `pcrSeq` — these are free text or externally-defined codes, not a dictionary-internal closed set
+  - `charLength`: `varchar` → `integer`; `stepIDObj`: `integer` → `varchar`; `virusMisc`: `float` → `varchar` — each corrected to match how the column is actually used
+
+- **Conditional-requirement (`mandatoryIf`) corrections**, recorded with their full rationale in `internal_structure_rules/MANDATORY_IF_CONDITIONS.md`
+  - `measures.relDateStart`/`relDateEnd`: `mandatoryIf` → `recommended` — these apply only to time-varying site/polygon metrics, not every measurement, so an unconditional `mandatoryIf` was too strict
+  - `wideNames.wideNameType`: `mandatoryIf` → `mandatory`
+  - `samples.collAppxT`, `samples.collDate`: `optional` → `mandatoryIf`; `samples.collPer`: `mandatory` → `mandatoryIf`
+  - `contacts.organizationID`: `mandatory` → `mandatoryIf`
+  - `phActions.relDateStart`/`relDateEnd`: newly populated, `NA` → `optional`
+  - `parts.dataTypes`/`parts.shortName`: removed from the `parts` table's own schema (`mandatory`/`optional` → `NA`) — bookkeeping cleanup, not a live column
+
+- **`ODM_wideNames.csv` cleanup**
+  - 463 cells across the ten `*Input` columns held a literal `"0"` — a spreadsheet-formula artifact, not a valid partID — cleared to blank
+  - Removed two stale rows: `#N/A` (a literal Excel formula-error string used as the `wideName` primary key) and `si_geoEPSG` (a duplicate of the existing `geoEPSG`-based entry)
+
+- **New parts** (101 new, full enumeration)
+  - **measurements** (69 new)
+    - `EVD` — Ebola Virus Disease (EVD)
+    - `aivA` — Aichivirus A (formerly Aichi virus)
+    - `aivB` — Aichivirus B (Bovine kobuvirus)
+    - `aivC` — Aichivirus C (Porcine kobuviru)
+    - `aivD` — Aichivirus D (kagovirus from black cattles)
+    - `aivE` — Aichivirus E (Rabbit picornavirus)
+    - `aivF` — Aichivirus F (Bat kobuvirus)
+    - `aivP1` — Human Aichi virus P1 protein gene
+    - `andv` — Andes virus (ANDV) hantavirus
+    - `bocaparvo` — Bocaparvovirus
+    - `bundibugyoV` — Bundibugyo virus, Orthoebolavirus bundibugyoense
+    - `cacipacore` — Cacipacore virus (Orthoflavivirus cacipacoreense)
+    - `cosaV` — Cosavirus (CosaV)
+    - `deltaretro` — Deltaretrovirus
+    - `dobv` — Dobrava-Belgrade virus (DOBV) hantavirus
+    - `ebolaV` — Ebola virus, Orthoebolavirus zairense
+    - `eeev` — Eastern equine encephalitis virus (EEEV)
+    - `erythroparvo` — Erythroparvovirus
+    - `g18s` — Giardia 18S rRNA
+    - `gDuodenalis` — Giardia duodenalis
+    - `gammaretro` — Gammaretrovirus
+    - `hAiV` — Human Aichi virus (AiV)
+    - `hAiVGA` — Human Aichi virus (AiV) Genotype A
+    - `hAiVGB` — Human Aichi virus (AiV) Genotype B
+    - `hAiVGC` — Human Aichi virus (AiV) Genotype C
+    - `hParvB19V` — human parvovirus B19 (B19V)
+    - `hadv` — Human mastadenoviruses (HAdVs)
+    - `hadvA` — Human mastadenovirus genotype group A
+    - `hadvB` — Human mastadenovirus genotype group B
+    - `hadvC` — Human mastadenovirus genotype group C
+    - `hadvD` — Human mastadenovirus genotype group D
+    - `hadvE` — Human mastadenovirus genotype group E
+    - `hadvF` — Human mastadenovirus genotype group F
+    - `hbov` — Human bocavirus (HBoV)
+    - `hfrs` — Hantavirus hemorrhagic fever with renal syndrome (HFRS)
+    - `hhv6` — Roseolovirus (Human Herpesvirus-6)
+    - `hhv6A` — Human Herpesvirus-6A (HHV-6A)
+    - `hhv6B` — Human Herpesvirus-6B (HHV-6B)
+    - `hpev` — Human Parechovirus (PeV) 
+    - `hpev1` — Human Parechovirus-1 (HPeV1)
+    - `hpev3` — Human Parechovirus-3 (HPeV3)
+    - `hps` — Hantavirus pulmonary syndrome (HPS)
+    - `htnv` — Hantaan virus (HTNV) hantavirus
+    - `lymphocrypto` — Lymphocryptovirus
+    - `pcv1` — Porcine Circovirus 1 (PCV-1)
+    - `pcv2` — Porcine Circovirus 2 (PCV-2)
+    - `picobirna` — Picobirnavirus
+    - `priTlym1` — Primate T-lymphotropic virus 1
+    - `priTlym2` — Primate T-lymphotropic virus 2
+    - `puuv` — Puumala virus (PUUV) hantavirus
+    - `pyv` — Human Polyomavirus (PyV)
+    - `pyvBK` — BK Polyomavirus (BKV)
+    - `pyvJC` — JC Polyomavirus (JCV)
+    - `safv` — Saffold virus (SAFV)
+    - `safv1` — Saffold virus 1 (SAFV-1)
+    - `safv2` — Saffold virus 2 (SAFV-2)
+    - `safv3` — Saffold virus 3 (SAFV-3)
+    - `safv4` — Saffold virus 4 (SAFV-4)
+    - `safv5` — Saffold virus 5 (SAFV-5)
+    - `safv6` — Saffold virus 6 (SAFV-6)
+    - `safv7` — Saffold virus 7 (SAFV-7)
+    - `safv8` — Saffold virus 8 (SAFV-8)
+    - `saliA` — Salivirus A (Salivirus aklasse)
+    - `seov` — Seoul virus (SEOV) hantavirus
+    - `snv` — Sin Nombre virus (SNV) hantavirus
+    - `sudanV` — Sudan virus, Orthoebolavirus sudanense
+    - `taiforestV` — Taï Forest virus, Orthoebolavirus taiense
+    - `tanapox` — Tanapox
+    - `ttv` — Torque Teno Virus
+  - **groups** (22 new)
+    - `aichivAGrp` — Human Aichivirus (AiV) Group (Aichivirus A)
+    - `bocaparvGrp` — Bocaparvovirus Group
+    - `circoGrp` — Circovirus Group
+    - `cosaVGrp` — Cosavirus Group
+    - `deltaretroGrp` — Deltaretrovirus Group
+    - `ebolaGrp` — Orthoebolavirus Group
+    - `eeevGrp` — Eastern equine encephalitis virus group
+    - `erythroparvoGrp` — Erythroparvovirus Group
+    - `gammaretroGrp` — Gammaretrovirus Group
+    - `giardiaGrp` — Giardia Group
+    - `hantaGrp` — Orthohantavirus Group
+    - `hhvGrp` — Roseolovirus (Human Herpesvirus-6) Group
+    - `kobuGrp` — Kobuvirus Group
+    - `lymphocryptoGrp` — Lymphocryptovirus Group
+    - `mastadenoGrp` — Human mastadenovirus Group
+    - `parechoGrp` — Parechovirus group
+    - `picobirnaGrp` — Picobirnavirus Group
+    - `polyomaGrp` — Polyomavirus Group
+    - `saffoldGrp` — Saffold Virus Group
+    - `saliGrp` — Salivirus Group
+    - `tanapoxGrp` — Tanapox Group
+    - `ttvGrp` — Torque Teno Virus Group
+  - **categories** (3 new)
+    - `cali` — Calibration purpose
+    - `hotel` — Hotel or motel
+    - `region` — Region
+  - **attributes** (3 new)
+    - `dataType` — Data Type column (Reported)
+    - `fKAliasID` — Foreign Key Alias ID
+    - `tag` — Wide name measurement and linkage tag
+  - **missingnessSets** (1 new)
+    - `geoRefMissingnessSet` — Geographical Reference Missingness Set
+  - **unitSets** (1 new)
+    - `humidUnitSet` — General Humidity Unit Set
+  - **partTypes** (1 new)
+    - `partTypes` — Part types part type
+  - **mmaSets** (1 new)
+    - `setTypeSet` — Set Type Set
+
+## 2026-09-16
 
 **v2.3.0**
 
