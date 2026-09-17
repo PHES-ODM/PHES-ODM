@@ -32,15 +32,14 @@ name: Sync Excel dictionary to PHES-ODM-Doc
 # 2026-09, same setting regenerate-odm-template.yml's PR step needs).
 #
 # The documentation's own version (DESCRIPTION's Version:, and
-# _quarto.yml's version:/output-file:) is auto-bumped by one PATCH version
-# by .github/scripts/bump_doc_version.py -- these two fields are known to
-# drift from each other in practice (DESCRIPTION at 2.1.0 while
-# _quarto.yml was still at 2.0.1, observed 2026-09), so that script reads
-# both, bumps from whichever is higher, and writes the same new value to
-# both, fixing that drift as a side effect. A human should bump this
-# further (a minor/major version) by hand afterward if the dictionary
-# change actually warrants a bigger jump than this workflow's always-safe
-# smallest step.
+# _quarto.yml's version:/output-file:) is set to match the dictionary
+# version by .github/scripts/bump_doc_version.py -- it used to be tracked
+# independently (and had already drifted: DESCRIPTION at 2.1.0 while
+# _quarto.yml was still at 2.0.1, observed 2026-09), but an independent doc
+# version sitting next to a dictionary at v3.0.1 was confusing rather than
+# useful, since every other artifact (workbook, SQL seed data, changelog)
+# is already named for the dictionary version. As of 2026-09 the two are
+# the same number on every sync -- no more separate bump to reason about.
 #
 # Rendering the Quarto book can genuinely fail here -- a new partType or
 # required column the display templates don't handle yet needs a human to
@@ -108,7 +107,7 @@ jobs:
       - name: Bump the documentation version
         if: steps.check.outputs.needed == 'true'
         id: docver
-        run: python3 .github/scripts/bump_doc_version.py doc-repo
+        run: python3 .github/scripts/bump_doc_version.py doc-repo "${{ steps.version.outputs.version }}"
 
       - name: Install quarto
         if: steps.check.outputs.needed == 'true'
@@ -176,7 +175,7 @@ jobs:
             changed on `main` there.
 
             - Swapped in `data/raw/ODM_dictionary_${{ steps.version.outputs.version }}.xlsx`, removing the old versioned snapshot.
-            - Bumped the documentation version from `${{ steps.docver.outputs.old_version }}` to `${{ steps.docver.outputs.new_version }}` in `DESCRIPTION` and `qmd/_quarto.yml` (a patch bump -- bump further by hand if this dictionary change warrants a bigger jump).
+            - Set the documentation version from `${{ steps.docver.outputs.old_version }}` to `${{ steps.docver.outputs.new_version }}` in `DESCRIPTION` and `qmd/_quarto.yml`, matching the dictionary version this snapshot is from.
 
             ${{ steps.summary.outputs.body }}
 
