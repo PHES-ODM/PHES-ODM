@@ -43,3 +43,5 @@ Steps 1–4 apply to every pull request touching the dictionary tables. Steps 5�
 8. **Update the changelog and merge it to `main`**: run the `sync-odm-changelog` process to draft the `changelog.md` entry for the new version — comparing the real dictionary content on `main` against the previous release's tag, rather than trusting the CSVs' own `firstReleased`/`changes` columns, which have been caught lagging a real change by a full release — and merge it. This has to land on `main` *before* the release is cut, so the tagged commit already contains its own changelog entry.
 
 9. **Draft and publish a GitHub Release from `main`**, creating the new version tag (`vX.Y.Z`, matching existing tags) as part of that same step via GitHub's own release UI (or `gh release create`) — there's no separate manual `git tag` command. Paste the changelog entry from step 8 into the release description.
+
+10. **Update all other directories**, following the documentation [outlined here](https://phes-odm.github.io/PHES-ODM-LinkMLGenerator/how-to/dictionary-workflow/#3-regenerate-the-linkml-map-schemas)
