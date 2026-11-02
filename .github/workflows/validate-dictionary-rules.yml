@@ -18,7 +18,7 @@ name: Validate dictionary rules
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, dev]
     paths:
       - "dictionary-tables/ODM_*.csv"
   workflow_dispatch: {}

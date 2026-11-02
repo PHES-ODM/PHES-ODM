@@ -64,9 +64,9 @@ The SQL schema is authored in Lucidchart, not in this repo. The flow:
 
 ## Versioning and release workflow
 
-- Active development happens on the `dev` branch; feature branches PR into `dev`; periodic PRs from `dev` → `main` cut a release. Current `main` is at v3.0.0 (merged from PR #275).
+- Active development happens on the `dev` branch; feature branches PR into `dev`; periodic PRs from `dev` → `main` cut a release. Current `main` is at v3.0.1.
 - New-version checklist (from `CONTRIBUTING.md`): every file in `dictionary-tables/` gets the new version suffix (e.g. `ODM_parts_v3.0.0.csv` → `ODM_parts_v3.1.0.csv`); the unsuffixed mirrors are updated to match. Tag the release commit with the version number.
-- Prior major versions live in `Archived V2.0/`, `Archived V2.1/`, `Archived V2.2/`, `archived V1.0/`. Don't edit them.
+- Prior versions live in `Archived V2.0/`, `Archived V2.1/`, `Archived V2.2/`, `Archived V3.0/`, `archived V1.0/` and `archived V2.3 (PATCH)/`. Don't edit them — they record what each version actually shipped, so a later column rename does not apply retroactively.
 
 ## Conventions
 
